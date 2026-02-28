@@ -1,0 +1,33 @@
+.root { background: var(--surf2); min-height: calc(100vh - var(--header)); padding: 32px 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.breadcrumb { display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx3);margin-bottom:20px; }
+.crumb { cursor:pointer;color:var(--tx2);font-weight:500; } .crumb:hover { color:var(--p600); }
+.sep { color:var(--tx4); }
+.layout { display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start; }
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.card,.stickyCard { background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r16);padding:28px; }
+.stickyCard { position:sticky;top:80px; }
+.main { display:flex;flex-direction:column;gap:20px; }
+.jobHeader { display:flex;align-items:flex-start;gap:16px;margin-bottom:20px; }
+.logo { width:64px;height:64px;border-radius:var(--r12);border:1px solid var(--bdr);background:var(--surf2);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:26px;font-weight:700;color:var(--p500);flex-shrink:0;overflow:hidden; }
+.logo img { width:100%;height:100%;object-fit:contain; }
+.title { font-family:var(--fd);font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px; }
+.companyName { font-size:15px;color:var(--tx2);font-weight:500;display:flex;align-items:center;gap:5px; }
+.verified { width:16px;height:16px;border-radius:50%;background:var(--p500);color:#fff;font-size:9px;font-weight:800;display:inline-flex;align-items:center;justify-content:center; }
+.chips { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px; }
+.chip { display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--tx2);background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--rfull);padding:5px 12px;font-weight:500; }
+.skills { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px; }
+.skill { font-size:12px;font-weight:600;color:var(--p600);background:var(--p50);border-radius:var(--rfull);padding:4px 12px; }
+.divider { border:none;border-top:1px solid var(--bdr);margin:20px 0; }
+.secTitle { font-family:var(--fd);font-size:16px;font-weight:700;margin-bottom:12px; }
+.body { font-size:14.5px;color:var(--tx2);line-height:1.8; }
+.body ul { padding-left:18px;margin-top:8px; }
+.body ul li { margin-bottom:6px; }
+.companyCard { display:flex;align-items:center;gap:12px; }
+.salary { font-family:var(--fd);font-size:26px;font-weight:800;color:var(--p600);letter-spacing:-.03em;margin-bottom:4px; }
+.salaryNote { font-size:13px;color:var(--tx3);margin-bottom:20px; }
+.infoList { display:flex;flex-direction:column;gap:12px; }
+.infoItem { display:flex;align-items:flex-start;gap:10px; }
+.infoIcon { font-size:16px;color:var(--tx3);margin-top:2px; }
+.infoLabel { font-size:11.5px;color:var(--tx3); }
+.infoVal { font-size:14px;font-weight:600;color:var(--tx1); }

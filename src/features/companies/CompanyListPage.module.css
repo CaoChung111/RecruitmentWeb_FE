@@ -1,0 +1,48 @@
+.root { background: var(--surf2); min-height: calc(100vh - var(--header)); padding: 40px 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.pageHead { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+.title { font-family: var(--fd); font-size: 32px; font-weight: 800; letter-spacing: -.04em; margin-bottom: 4px; }
+.sub { font-size: 15px; color: var(--tx2); }
+
+.grid { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 18px; 
+  align-items: stretch; /* Đảm bảo các card giãn đều chiều cao */
+}
+@media(max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+.card { 
+  background: var(--surf);
+  border: 1px solid var(--bdr);
+  border-radius: var(--r16);
+  padding: 24px;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  
+  display: flex;         /* Quan trọng */
+  flex-direction: column; /* Quan trọng */
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--sh-lg); }
+
+.logoWrap { 
+  display: flex; 
+  align-items: flex-start; /* Giữ logo ở phía trên */
+  gap: 12px; 
+  margin-bottom: 12px; 
+  flex: 1; /* Chiếm khoảng trống thừa */
+}
+
+.logo { width: 56px; height: 56px; border-radius: var(--r12); border: 1px solid var(--bdr); background: var(--surf2); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-size: 22px; font-weight: 700; color: var(--p500); flex-shrink: 0; overflow: hidden; }
+.logo img { width: 100%; height: 100%; object-fit: contain; }
+.name { font-family: var(--fd); font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.addr { font-size: 12px; color: var(--tx3); line-height: 1.4; }
+
+.footer { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 8px;
+  margin-top: 16px; /* Khoảng cách phía trên */
+}

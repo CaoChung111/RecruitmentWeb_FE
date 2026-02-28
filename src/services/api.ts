@@ -1,0 +1,137 @@
+import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosError } from 'axios'
+import { notification } from 'antd'
+import type { ApiResponse, PaginatedResponse } from '../types'
+
+const api: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL ?? 'https://recruitmentweb.onrender.com',
+  timeout: 15000,
+  withCredentials: true,
+  headers: { 'Content-Type': 'application/json' },
+})
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token')
+  const url = config.url || ''
+  
+  // Bỏ qua việc đính kèm token cho các endpoint auth cơ bản
+  const isAuthEndpoint = url.includes('/auth/login') || 
+                         url.includes('/auth/register') || 
+                         url.includes('/auth/refresh')
+
+  if (token && !isAuthEndpoint) {
+    config.headers['Authorization'] = `Bearer ${token}`
+  }
+  return config
+})
+
+let isRefreshing = false
+let failedQueue: { resolve: (v: unknown) => void; reject: (e: unknown) => void }[] = []
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach(({ resolve, reject }) => (error ? reject(error) : resolve(token)))
+  failedQueue = []
+}
+
+// ... (giữ nguyên phần trên của cấu trúc 2) ...
+
+api.interceptors.response.use(
+  (res) => res,
+  async (err: AxiosError) => {
+    const original = err.config as AxiosRequestConfig & { _retry?: boolean }
+    const url = original?.url || ''
+
+    // 🔥 Chặn ngay nếu lỗi từ các endpoint auth
+    if (url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh')) {
+      return Promise.reject(err)
+    }
+
+    // 1. Xử lý 401: Refresh Token
+    if (err.response?.status === 401 && !original._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject })
+        }).then((token) => {
+          original.headers!['Authorization'] = `Bearer ${token}`
+          return api(original)
+        })
+      }
+      original._retry = true
+      isRefreshing = true
+      try {
+        const { data } = await api.get('/api/v1/auth/refresh')
+        
+        // ⚠️ LƯU Ý: Backend Spring Boot thường trả về access_token dạng snake_case. 
+        // Hãy check kỹ log response đoạn này để dùng .access_token hay .accessToken cho đúng.
+        const newToken = data.data?.access_token || data.data?.accessToken 
+        
+        localStorage.setItem('access_token', newToken)
+        processQueue(null, newToken)
+        original.headers!['Authorization'] = `Bearer ${newToken}`
+        return api(original)
+      } catch (refreshErr) {
+        processQueue(refreshErr)
+        localStorage.removeItem('access_token')
+        
+        // Bắn thông báo giống cấu trúc cũ
+        notification.error({ 
+            message: "Lỗi xác thực", 
+            description: "Phiên đăng nhập hết hạn, vui lòng login lại." 
+        })
+        
+        window.location.href = '/login'
+        return Promise.reject(refreshErr)
+      } finally {
+        isRefreshing = false
+      }
+    }
+
+    // 2. Xử lý 403: Forbidden (Mang từ cấu trúc 1 sang)
+    if (err.response?.status === 403) {
+      notification.error({
+        message: "Truy cập bị từ chối",
+        description: (err.response?.data as any)?.message || "Bạn không có quyền thực hiện thao tác này.",
+      });
+      return Promise.reject(err);
+    }
+
+    // 3. Các lỗi khác
+    if (err.response?.status !== 401) {
+      const msg = (err.response?.data as any)?.message ?? err.message
+      notification.error({ message: 'Lỗi', description: msg, placement: 'topRight' })
+    }
+
+    return Promise.reject(err)
+  }
+)
+
+// ... (giữ nguyên các hàm get, post, put, patch... bên dưới) ...
+
+export const get = <T>(url: string, params?: object) =>
+  api.get<ApiResponse<T>>(url, { params }).then((r) => r.data.data)
+
+export const post = <T>(url: string, body?: unknown) =>
+  api.post<ApiResponse<T>>(url, body).then((r) => r.data.data)
+
+export const put = <T>(url: string, body?: unknown) =>
+  api.put<ApiResponse<T>>(url, body).then((r) => r.data.data)
+
+export const patch = <T>(url: string, body?: unknown) =>
+  api.patch<ApiResponse<T>>(url, body).then((r) => r.data.data)
+
+export const del = (url: string) =>
+  api.delete<ApiResponse<string>>(url).then((r) => r.data.message)
+
+export const getPaginated = <T>(url: string, params?: object) =>
+  api.get<ApiResponse<PaginatedResponse<T>>>(url, { params }).then((r) => r.data.data)
+
+export const uploadFile = (file: File) => {
+  const form = new FormData()
+  form.append('file', file)
+  return api
+    .post<ApiResponse<string>>('/api/v1/files/upload', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    .then((r) => r.data.data)
+}
+
+export default api

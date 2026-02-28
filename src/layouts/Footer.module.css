@@ -1,0 +1,15 @@
+.footer { background: #0a0f1e; color: #64748b; padding-top: 48px; }
+.inner { max-width:1200px; margin:0 auto; padding:0 24px 48px; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; }
+@media(max-width:900px){.inner{grid-template-columns:1fr 1fr}.brand{grid-column:1/-1}}
+.brand{}
+.logo { display:inline-flex; align-items:center; gap:8px; margin-bottom:12px; }
+.logoMark { width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-family:var(--fd);font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center; }
+.logoText { font-family:var(--fd);font-size:17px;font-weight:700;color:#f1f5f9;letter-spacing:-.03em; }
+.tagline { font-size:13.5px;color:#475569;line-height:1.7;max-width:280px; }
+.group{}
+.groupTitle { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#f1f5f9;margin-bottom:14px; }
+.links { list-style:none;display:flex;flex-direction:column;gap:10px; }
+.links a { font-size:13.5px;color:#64748b;transition:color .12s; }
+.links a:hover { color:#94a3b8; }
+.bottom { border-top:1px solid #1e293b;padding:16px 24px;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:#475569; }
+.author { font-family:var(--fd);font-weight:700;background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }

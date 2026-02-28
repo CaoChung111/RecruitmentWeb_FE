@@ -1,0 +1,53 @@
+.hero {
+  position: relative; min-height: 85vh; display: flex; align-items: center;
+  justify-content: center; overflow: hidden; padding: 80px 24px;
+  background: linear-gradient(160deg,var(--surf) 0%,#f0f0ff 40%,#ede9fe 70%,var(--surf) 100%);
+}
+[data-theme='dark'] .hero { background: linear-gradient(160deg,var(--surf) 0%,#13103a 50%,var(--surf) 100%); }
+.orb1,.orb2 { position: absolute; border-radius: 50%; pointer-events: none; }
+.orb1 { top:-100px; right:10%; width:500px; height:500px; background:radial-gradient(circle,rgba(99,102,241,.2) 0%,transparent 70%); animation:pulse 8s ease-in-out infinite; }
+.orb2 { bottom:-60px; left:5%; width:400px; height:400px; background:radial-gradient(circle,rgba(124,58,237,.15) 0%,transparent 70%); animation:pulse 10s ease-in-out infinite 3s; }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.08);opacity:1} }
+
+.heroContent { position: relative; z-index: 2; text-align: center; max-width: 740px; }
+.heroTag { display:inline-flex;align-items:center;gap:6px;background:var(--p50);border:1px solid var(--p100);color:var(--p600);font-size:13px;font-weight:600;padding:5px 14px;border-radius:var(--rfull);margin-bottom:20px; }
+.heroTitle { font-family:var(--fd);font-size:clamp(44px,7vw,72px);font-weight:800;letter-spacing:-.04em;line-height:1.06;margin-bottom:16px; }
+.grad { background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#a855f7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.heroSub { font-size:17px;color:var(--tx2);max-width:500px;margin:0 auto 28px;line-height:1.7; }
+
+.searchBar {
+  display:flex;align-items:center;background:var(--surf);border:1.5px solid var(--bdr);
+  border-radius:50px;padding:6px 6px 6px 20px;max-width:640px;margin:0 auto 16px;
+  box-shadow:var(--sh-lg);
+}
+.searchIcon { color:var(--tx3);flex-shrink:0;font-size:16px; }
+.searchInput { flex:1;border:none;outline:none;font-family:var(--fb);font-size:14.5px;color:var(--tx1);background:transparent;min-width:0;margin-left:8px; }
+.searchInput::placeholder { color:var(--tx3); }
+.divider { width:1px;height:26px;background:var(--bdr);margin:0 14px;flex-shrink:0; }
+.searchBtn { flex-shrink:0;border-radius:40px !important;height:42px !important;margin-left:4px; }
+
+.hints { display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px; }
+.hintLabel { font-size:13px;color:var(--tx3); }
+.hintTag { font-size:12.5px;font-weight:500;color:var(--tx2);background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rfull);padding:4px 12px;cursor:pointer;transition:all .12s; }
+.hintTag:hover { color:var(--p600);border-color:var(--p200);background:var(--p50); }
+
+.statsRow { border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--surf);padding:0 24px; }
+.statsGrid { max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bdr);border-radius:var(--r12);overflow:hidden; }
+@media(max-width:640px){.statsGrid{grid-template-columns:repeat(2,1fr)}}
+.stat { background:var(--surf);padding:24px;text-align:center; }
+.statVal { display:block;font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-.04em;margin-bottom:4px; }
+.statLbl { display:block;font-size:13px;color:var(--tx3); }
+
+.container { max-width:1200px;margin:0 auto;padding:0 24px; }
+.section { padding:64px 0; }
+.secHead { display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px; }
+.secTitle { font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px; }
+.secSub { font-size:14px;color:var(--tx2); }
+.grid { display:grid;grid-template-columns:repeat(3,1fr);gap:18px; }
+@media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+
+.cta { background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 50%,#4f46e5 100%);border-radius:20px;padding:56px;position:relative;overflow:hidden; }
+.ctaOrb { position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(124,58,237,.5);filter:blur(60px); }
+.ctaTitle { font-family:var(--fd);font-size:36px;font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:12px; }
+.ctaSub { color:rgba(255,255,255,.7);font-size:16px;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto; }

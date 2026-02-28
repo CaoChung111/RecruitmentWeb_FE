@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --p50: #eef2ff; --p100: #e0e7ff; --p200: #c7d2fe;
+  --p400: #818cf8; --p500: #6366f1; --p600: #4f46e5; --p700: #4338ca;
+  --green: #10b981; --amber: #f59e0b; --red: #ef4444; --blue: #3b82f6;
+  --surf: #fff; --surf2: #f8fafc; --surf3: #f1f5f9;
+  --bdr: #e2e8f0; --bdr2: #f1f5f9;
+  --tx1: #0f172a; --tx2: #475569; --tx3: #94a3b8;
+  --r6: 6px; --r8: 8px; --r10: 10px; --r12: 12px; --r16: 16px; --r20: 20px; --rfull: 9999px;
+  --sh-sm: 0 1px 4px rgba(15,23,42,.06), 0 2px 8px rgba(15,23,42,.04);
+  --sh-md: 0 4px 16px rgba(15,23,42,.08);
+  --sh-lg: 0 12px 40px rgba(15,23,42,.12);
+  --sh-p:  0 8px 32px rgba(79,70,229,.28);
+  --fd: 'Sora', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+  --sidebar: 240px;
+  --header:  64px;
+}
+
+[data-theme='dark'] {
+  --surf: #0f172a; --surf2: #1e293b; --surf3: #334155;
+  --bdr: #334155;  --bdr2: #1e293b;
+  --tx1: #f1f5f9;  --tx2: #94a3b8;  --tx3: #475569;
+  --p50: rgba(79,70,229,.12); --p100: rgba(99,102,241,.15);
+  --sh-md: 0 4px 16px rgba(0,0,0,.3);
+  --sh-lg: 0 12px 40px rgba(0,0,0,.4);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+html { scroll-behavior: smooth }
+
+body {
+  font-family: var(--fb);
+  font-size: 15px;
+  color: var(--tx1);
+  background: var(--surf);
+  -webkit-font-smoothing: antialiased;
+  transition: background .3s, color .3s;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--fd);
+  letter-spacing: -.02em;
+  font-weight: 700;
+  color: var(--tx1);
+}
+
+a { color: inherit; text-decoration: none }
+img { display: block; max-width: 100% }
+
+::-webkit-scrollbar { width: 6px; height: 6px }
+::-webkit-scrollbar-track { background: transparent }
+::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: var(--rfull) }
+
+/* ANT OVERRIDES */
+.ant-layout, .ant-layout-content { background: var(--surf2) !important }
+.ant-table-wrapper .ant-table { background: var(--surf) !important }
+.ant-table-wrapper .ant-table-thead > tr > th {
+  background: var(--surf2) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .07em !important;
+  color: var(--tx3) !important;
+}
+.ant-table-wrapper .ant-table-tbody > tr > td { color: var(--tx1) !important }
+.ant-table-wrapper .ant-table-tbody > tr:hover > td { background: var(--surf2) !important }
+.ant-modal-content { border-radius: 20px !important; overflow: hidden !important }
+.ant-notification-notice { border-radius: 12px !important; box-shadow: var(--sh-lg) !important }

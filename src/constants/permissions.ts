@@ -4,7 +4,7 @@ export const ALL_PERMISSIONS = {
       method: "GET",
       apiPath: "/api/v1/companies",
       module: "COMPANIES",
-    }, // Tương ứng COMPANY_VIEW_ALL
+    },
     CREATE: {
       method: "POST",
       apiPath: "/api/v1/companies",
@@ -23,6 +23,18 @@ export const ALL_PERMISSIONS = {
     VIEW_DETAIL: {
       method: "GET",
       apiPath: "/api/v1/companies/{id}",
+      module: "COMPANIES",
+    },
+
+    // ✅ Thêm mới
+    VIEW_INACTIVE: {
+      method: "GET",
+      apiPath: "/api/v1/companies/trash",
+      module: "COMPANIES",
+    },
+    RESTORE: {
+      method: "PUT",
+      apiPath: "/api/v1/companies/{id}/restore",
       module: "COMPANIES",
     },
   },
@@ -128,9 +140,21 @@ export const ALL_PERMISSIONS = {
     },
   },
   USERS: {
-    GET_PAGINATE: { method: "GET", apiPath: "/api/v1/users", module: "USERS" }, // Tương ứng USER_VIEW_ALL
-    CREATE: { method: "POST", apiPath: "/api/v1/users", module: "USERS" },
-    UPDATE: { method: "PUT", apiPath: "/api/v1/users", module: "USERS" },
+    GET_PAGINATE: {
+      method: "GET",
+      apiPath: "/api/v1/users",
+      module: "USERS",
+    },
+    CREATE: {
+      method: "POST",
+      apiPath: "/api/v1/users",
+      module: "USERS",
+    },
+    UPDATE: {
+      method: "PUT",
+      apiPath: "/api/v1/users",
+      module: "USERS",
+    },
     DELETE: {
       method: "DELETE",
       apiPath: "/api/v1/users/{id}",
@@ -139,6 +163,18 @@ export const ALL_PERMISSIONS = {
     VIEW_DETAIL: {
       method: "GET",
       apiPath: "/api/v1/users/{id}",
+      module: "USERS",
+    },
+    VIEW_DISABLE: {
+      method: "GET",
+      apiPath: "/api/v1/users/trash",
+      module: "USERS",
+    },
+
+    // ✅ Thêm mới
+    RESTORE: {
+      method: "PUT",
+      apiPath: "/api/v1/users/{id}/restore",
       module: "USERS",
     },
   },

@@ -19,10 +19,24 @@ const AdminSkillsPage: React.FC = () => {
 
   const load = useCallback(() => {
     setLoading(true)
-    skillService.getAll({ page, size: 20, name: keyword })
-      .then(d => { setSkills(d?.result ?? []); setTotal(d?.meta.totalItems ?? 0) })
+    
+    // 🔥 SỬA LẠI PARAMS: 0-based pagination và Spring Filter
+    const params: any = { 
+      page: page - 1, 
+      size: 20 
+    }
+    if (keyword) {
+      // Tìm theo name cho skill
+      params.filter = `name~'*${keyword}*'` 
+    }
+
+    skillService.getAll(params)
+      .then(d => { setSkills(d?.result ?? []); setTotal(d?.meta?.totalItems ?? 0) })
       .finally(() => setLoading(false))
   }, [page, keyword])
+
+  // 🔥 THÊM LOGIC RESET TRANG
+  useEffect(() => { setPage(1) }, [keyword])
 
   useEffect(() => { load() }, [load])
 
@@ -30,12 +44,17 @@ const AdminSkillsPage: React.FC = () => {
   const openEdit = (s: Skill) => { setEditing(s); setOpen(true) }
 
   const handleDelete = async (id: number) => {
-    await skillService.remove(id)
-    notification.success({ message: 'Deleted' }); load()
+    try {
+      await skillService.remove(id)
+      notification.success({ message: 'Deleted' })
+      load()
+    } catch (e) {
+    }
   }
 
   const columns = [
-    { title: '#', key: 'idx', render: (_: any, __: any, i: number) => (page-1)*20+i+1, width: 60 },
+    // Index vẫn tính theo state 'page' (1-based) nên không thay đổi gì cả
+    { title: '#', key: 'idx', render: (_: any, __: any, i: number) => (page - 1) * 20 + i + 1, width: 60 },
     { title: 'Skill', dataIndex: 'name', key: 'name',
       render: (v: string) => <Tag color="blue" style={{ fontSize: 13, padding: '3px 10px' }}>{v}</Tag> },
     { title: 'Actions', key: 'actions', width: 140, render: (_: any, r: Skill) => (
@@ -53,7 +72,7 @@ const AdminSkillsPage: React.FC = () => {
       <div className={styles.pageHead}>
         <div><h1 className={styles.title}>Skills</h1><p className={styles.sub}>{total} skills</p></div>
         <Space>
-          <Input prefix={<SearchOutlined />} placeholder="Search..." value={keyword}
+          <Input prefix={<SearchOutlined />} placeholder="Search skill..." value={keyword}
             onChange={e => setKeyword(e.target.value)} style={{ width: 200 }} />
           <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>Add Skill</Button>
         </Space>

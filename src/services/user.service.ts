@@ -16,5 +16,7 @@ export const userService = {
   getById: (id: number) => get<User>(`/api/v1/users/${id}`),
   create: (data: UserRequestDTO) => post<User>('/api/v1/users', data),
   update: (id: number, data: UserUpdateDTO) => put<string>(`/api/v1/users/${id}`, data),
-  remove: (id: number) => del(`/api/v1/users/${id}`),
+  softDelete: (id: number) => del(`/api/v1/users/${id}`),
+  getInactive: (params?: object) => getPaginated<User>('/api/v1/users/trash', params),
+  restore: (id: number) => put<string>(`/api/v1/users/${id}/restore`, {}),
 }

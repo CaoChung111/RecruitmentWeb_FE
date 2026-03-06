@@ -24,6 +24,7 @@ import AdminResumesPage from '../features/admin/resumes/AdminResumesPage'
 import AdminUsersPage from '../features/admin/users/AdminUsersPage'
 import AdminSkillsPage from '../features/admin/skills/AdminSkillsPage'
 import AdminRolesPage from '../features/admin/roles/AdminRolesPage'
+import NotPermittedPage from '../features/auth/NotPermittedPage';
 import '../styles/global.css'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -81,6 +82,7 @@ const AppContent: React.FC = () => {
             <Route path="skills" element={<AdminSkillsPage />} />
             <Route path="roles" element={<AdminRolesPage />} />
           </Route>
+          <Route path="/not-permitted" element={<NotPermittedPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AntApp>

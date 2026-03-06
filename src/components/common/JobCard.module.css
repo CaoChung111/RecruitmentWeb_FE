@@ -5,7 +5,13 @@
   transition: transform .2s, box-shadow .2s, border-color .2s;
 }
 .card:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); border-color: var(--p200); }
-.expired { opacity: .6; pointer-events: none; }
+.expired {
+  opacity: 0.6;
+  background-color: #f8f9fa;
+  filter: grayscale(0.8);
+  border: 1px solid #eee;
+  pointer-events: none;
+}
 .featured { border-color: var(--p200); background: linear-gradient(135deg,rgba(79,70,229,.03) 0%,var(--surf) 100%); }
 
 .ribbon {

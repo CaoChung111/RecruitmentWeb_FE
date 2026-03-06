@@ -60,6 +60,7 @@ const RoleModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, allPerm
   // Khởi tạo giao diện gập mở (Collapse) cho từng Module
   const collapseItems = Object.entries(groupedPerms).map(([moduleName, perms]) => ({
     key: moduleName,
+    forceRender: true,
     label: <span style={{ fontWeight: 600, color: 'var(--p600)' }}>Module: {moduleName}</span>,
     children: (
       <Row gutter={[16, 16]}>

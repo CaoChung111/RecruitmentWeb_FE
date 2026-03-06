@@ -10,5 +10,7 @@ export const companyService = {
   getById: (id: number) => get<Company>(`/api/v1/companies/${id}`),
   create: (data: CompanyRequestDTO) => post<Company>('/api/v1/companies', data),
   update: (id: number, data: CompanyRequestDTO) => put<string>(`/api/v1/companies/${id}`, data),
-  remove: (id: number) => del(`/api/v1/companies/${id}`),
+  softDelete: (id: number) => del(`/api/v1/companies/${id}`),
+  getInactive: (params?: object) => getPaginated<Company>('/api/v1/companies/trash', params),
+  restore: (id: number) => put<string>(`/api/v1/companies/${id}/restore`, {}),
 }

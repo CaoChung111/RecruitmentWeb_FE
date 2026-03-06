@@ -3,7 +3,7 @@ import { notification } from 'antd'
 import type { ApiResponse, PaginatedResponse } from '../types'
 
 const api: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'https://recruitmentweb.onrender.com',
+  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8080',
   timeout: 15000,
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
@@ -13,7 +13,6 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
   const url = config.url || ''
   
-  // Bỏ qua việc đính kèm token cho các endpoint auth cơ bản
   const isAuthEndpoint = url.includes('/auth/login') || 
                          url.includes('/auth/register') || 
                          url.includes('/auth/refresh')
@@ -32,21 +31,44 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = []
 }
 
-// ... (giữ nguyên phần trên của cấu trúc 2) ...
-
 api.interceptors.response.use(
   (res) => res,
   async (err: AxiosError) => {
     const original = err.config as AxiosRequestConfig & { _retry?: boolean }
     const url = original?.url || ''
+    const status = err.response?.status
+    const errorData = err.response?.data as any
+    const errorMessage = errorData?.message || err.message
 
-    // 🔥 Chặn ngay nếu lỗi từ các endpoint auth
-    if (url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh')) {
+    // 🔥 1. XỬ LÝ RIÊNG CHO ĐĂNG NHẬP / ĐĂNG KÝ
+    if (url.includes('/auth/login') || url.includes('/auth/register')) {
+      if (status === 401 || status === 400) {
+        const msgLower = errorMessage.toLowerCase();
+        if (msgLower.includes('vô hiệu hóa') || msgLower.includes('disabled')) {
+          notification.error({ 
+            message: 'Tài khoản bị khóa', 
+            description: 'Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ Admin.',
+            duration: 5
+          })
+        } else {
+          notification.error({ 
+            message: 'Đăng nhập thất bại', 
+            description: errorMessage === 'Bad credentials' ? 'Email hoặc mật khẩu không chính xác' : errorMessage 
+          })
+        }
+      } else {
+        notification.error({ message: 'Lỗi hệ thống', description: errorMessage })
+      }
       return Promise.reject(err)
     }
 
-    // 1. Xử lý 401: Refresh Token
-    if (err.response?.status === 401 && !original._retry) {
+    // Nếu lỗi là do gọi refresh token thất bại thì văng ra login luôn, không lặp vô hạn
+    if (url.includes('/auth/refresh')) {
+      return Promise.reject(err)
+    }
+
+    // 2. Xử lý 401 (Hết hạn token): Gọi Refresh Token
+    if (status === 401 && !original._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject })
@@ -57,11 +79,9 @@ api.interceptors.response.use(
       }
       original._retry = true
       isRefreshing = true
+      
       try {
         const { data } = await api.get('/api/v1/auth/refresh')
-        
-        // ⚠️ LƯU Ý: Backend Spring Boot thường trả về access_token dạng snake_case. 
-        // Hãy check kỹ log response đoạn này để dùng .access_token hay .accessToken cho đúng.
         const newToken = data.data?.access_token || data.data?.accessToken 
         
         localStorage.setItem('access_token', newToken)
@@ -72,12 +92,10 @@ api.interceptors.response.use(
         processQueue(refreshErr)
         localStorage.removeItem('access_token')
         
-        // Bắn thông báo giống cấu trúc cũ
         notification.error({ 
-            message: "Lỗi xác thực", 
-            description: "Phiên đăng nhập hết hạn, vui lòng login lại." 
+            message: "Phiên đăng nhập hết hạn", 
+            description: "Vui lòng đăng nhập lại để tiếp tục." 
         })
-        
         window.location.href = '/login'
         return Promise.reject(refreshErr)
       } finally {
@@ -85,26 +103,23 @@ api.interceptors.response.use(
       }
     }
 
-    // 2. Xử lý 403: Forbidden (Mang từ cấu trúc 1 sang)
-    if (err.response?.status === 403) {
+    // 3. Xử lý 403: Forbidden (Không có quyền)
+    if (status === 403) {
       notification.error({
         message: "Truy cập bị từ chối",
-        description: (err.response?.data as any)?.message || "Bạn không có quyền thực hiện thao tác này.",
+        description: errorMessage || "Bạn không có quyền thực hiện thao tác này.",
       });
       return Promise.reject(err);
     }
 
-    // 3. Các lỗi khác
-    if (err.response?.status !== 401) {
-      const msg = (err.response?.data as any)?.message ?? err.message
-      notification.error({ message: 'Lỗi', description: msg, placement: 'topRight' })
+    // 4. Các lỗi khác (500, 404, 400...)
+    if (status !== 401) {
+      notification.error({ message: 'Lỗi', description: errorMessage, placement: 'topRight' })
     }
 
     return Promise.reject(err)
   }
 )
-
-// ... (giữ nguyên các hàm get, post, put, patch... bên dưới) ...
 
 export const get = <T>(url: string, params?: object) =>
   api.get<ApiResponse<T>>(url, { params }).then((r) => r.data.data)

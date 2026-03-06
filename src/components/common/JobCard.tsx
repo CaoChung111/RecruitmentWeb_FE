@@ -11,7 +11,7 @@ interface Props { job: Job; onApply?: (job: Job) => void }
 
 const JobCard: React.FC<Props> = ({ job, onApply }) => {
   const navigate  = useNavigate()
-  const expired   = isJobExpired(job.endDate)
+  const expired   = isJobExpired(job.endDate, job.active)
   const featured  = isJobFeatured(job)
 
   return (
@@ -19,8 +19,8 @@ const JobCard: React.FC<Props> = ({ job, onApply }) => {
       className={`${styles.card} ${expired ? styles.expired : ''} ${featured ? styles.featured : ''}`}
       onClick={() => navigate(`/jobs/${job.id}`)}
     >
-      {featured && (
-        <div className={styles.ribbon}><StarFilled style={{ fontSize: 9 }} /> Featured</div>
+      {featured && !expired && (
+        <div className={styles.ribbon} ><StarFilled style={{ fontSize: 9 }} /> Featured</div>
       )}
 
       <div className={styles.header}>
@@ -56,7 +56,7 @@ const JobCard: React.FC<Props> = ({ job, onApply }) => {
       <div className={styles.footer}>
         <span className={styles.salary}>{formatSalary(job.salary)}</span>
         <div className={styles.footerRight}>
-          <span className={styles.time}>{formatRelativeTime(job.createdAt)}</span>
+          <span className={styles.time}>{formatRelativeTime(job.startDate)}</span>
           <Button
             type="primary" size="small"
             disabled={expired}

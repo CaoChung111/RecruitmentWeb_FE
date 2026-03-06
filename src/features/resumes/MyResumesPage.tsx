@@ -1,17 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Tag, Empty, Skeleton, Popconfirm, App } from 'antd'
-import { CheckCircleOutlined, CloseCircleOutlined, ClockCircleOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons'
+import { 
+  CheckCircleOutlined, 
+  CloseCircleOutlined, 
+  ClockCircleOutlined, 
+  EyeOutlined, 
+  DeleteOutlined,
+  StopOutlined,
+  InfoCircleOutlined
+} from '@ant-design/icons'
 import { resumeService } from '../../services/resume.service'
 import type { Resume, ResumeStatus } from '../../types'
 import { formatDate, formatRelativeTime } from '../../utils/format'
 import styles from './MyResumesPage.module.css'
 
+// 🔥 1. Thêm cấu hình UI cho WITHDRAWN và SYSTEM_CANCEL
 const STATUS_CFG: Record<ResumeStatus, { label: string; color: string; icon: React.ReactNode }> = {
-  PENDING:   { label: 'Pending',   color: '#f59e0b', icon: <ClockCircleOutlined /> },
-  REVIEWING: { label: 'Reviewing', color: '#3b82f6', icon: <EyeOutlined /> },
-  APPROVED:  { label: 'Approved',  color: '#10b981', icon: <CheckCircleOutlined /> },
-  REJECTED:  { label: 'Rejected',  color: '#ef4444', icon: <CloseCircleOutlined /> },
+  PENDING:       { label: 'Pending',       color: '#f59e0b', icon: <ClockCircleOutlined /> },
+  REVIEWING:     { label: 'Reviewing',     color: '#3b82f6', icon: <EyeOutlined /> },
+  APPROVED:      { label: 'Approved',      color: '#10b981', icon: <CheckCircleOutlined /> },
+  REJECTED:      { label: 'Rejected',      color: '#ef4444', icon: <CloseCircleOutlined /> },
+  WITHDRAWN:     { label: 'Withdrawn',     color: '#8c8c8c', icon: <StopOutlined /> },
+  SYSTEM_CANCEL: { label: 'Cancelled',     color: '#595959', icon: <InfoCircleOutlined /> },
+}
+
+const BORDER_COLOR: Record<ResumeStatus, string> = {
+  PENDING: '#f59e0b', REVIEWING: '#3b82f6', APPROVED: '#10b981', REJECTED: '#ef4444',
+  WITHDRAWN: '#d9d9d9', SYSTEM_CANCEL: '#bfbfbf' // Thêm viền màu xám
 }
 
 const MyResumesPage: React.FC = () => {
@@ -27,21 +43,20 @@ const MyResumesPage: React.FC = () => {
 
   useEffect(() => { load() }, [])
 
+  // Nút Delete này gọi xuống Backend sẽ tự động chạy logic chuyển thành WITHDRAWN
   const handleDelete = async (id: number) => {
     await resumeService.remove(id)
-    notification.success({ message: 'Application withdrawn' })
+    notification.success({ message: 'Application withdrawn successfully' })
     load()
   }
 
+  // 💡 Lưu ý: Mình giữ nguyên 4 KPIs chính. Không đưa Withdrawn/Cancel vào KPI 
+  // để giao diện hiển thị 4 cột cho đẹp, ứng viên chỉ quan tâm 4 trạng thái active này.
   const stats = {
     PENDING:   resumes.filter(r => r.status === 'PENDING').length,
     REVIEWING: resumes.filter(r => r.status === 'REVIEWING').length,
     APPROVED:  resumes.filter(r => r.status === 'APPROVED').length,
     REJECTED:  resumes.filter(r => r.status === 'REJECTED').length,
-  }
-
-  const BORDER_COLOR: Record<ResumeStatus, string> = {
-    PENDING: '#f59e0b', REVIEWING: '#3b82f6', APPROVED: '#10b981', REJECTED: '#ef4444',
   }
 
   return (
@@ -108,6 +123,7 @@ const MyResumesPage: React.FC = () => {
                         </span>
                       </div>
 
+                      {/* 🔥 2. Cập nhật Banners giải thích cho trạng thái */}
                       {r.status === 'APPROVED' && (
                         <div className={styles.approvedBanner}>
                           🎉 Congratulations! Your application was approved. HR will contact you soon.
@@ -118,6 +134,21 @@ const MyResumesPage: React.FC = () => {
                           Thank you for applying. Unfortunately we've moved forward with another candidate.
                         </div>
                       )}
+                      
+                      {/* Banner khi ứng viên tự rút CV */}
+                      {r.status === 'WITHDRAWN' && (
+                        <div className={styles.rejectedBanner} style={{ backgroundColor: '#f5f5f5', color: '#595959' }}>
+                          You have withdrawn this application. It is no longer visible to the employer.
+                        </div>
+                      )}
+                      
+                      {/* Banner khi Hệ thống hủy (Job đóng / Công ty bị khóa) */}
+                      {r.status === 'SYSTEM_CANCEL' && (
+                        <div className={styles.rejectedBanner} style={{ backgroundColor: '#fff1f0', color: '#cf1322' }}>
+                          This application was cancelled because the job or company is no longer active.
+                        </div>
+                      )}
+
                       {r.status === 'REVIEWING' && (
                         <div className={styles.timeline}>
                           {['Submitted', 'Under Review', 'Interview', 'Decision'].map((step, i) => (
@@ -130,15 +161,18 @@ const MyResumesPage: React.FC = () => {
                       )}
                     </div>
 
+                    {/* 🔥 3. Ẩn nút Delete/Withdraw với các trạng thái không hợp lệ */}
                     <div className={styles.cardActions}>
                       {(r.status === 'PENDING' || r.status === 'REVIEWING') && (
                         <Popconfirm title="Withdraw this application?" onConfirm={() => handleDelete(r.id)} okText="Yes" cancelText="No">
                           <Button danger size="small" icon={<DeleteOutlined />}>Withdraw</Button>
                         </Popconfirm>
                       )}
-                      {r.status === 'REJECTED' && (
-                        <Button size="small" danger onClick={() => handleDelete(r.id)}>Delete</Button>
-                      )}
+                      
+                      {/* Chú ý: Đã bỏ nút Delete cho trạng thái REJECTED 
+                          Vì API backend của bạn thiết kế là Delete = Withdraw, 
+                          Rút 1 CV đã bị loại là không hợp lý */}
+                          
                       <Button size="small" onClick={() => navigate(`/jobs/${r.job?.id}`)}>View Job</Button>
                     </div>
                   </div>

@@ -31,7 +31,7 @@ const ClientLayout: React.FC = () => {
     items: [
       { key: 'resumes', label: 'My Applications', icon: <FileTextOutlined />, onClick: () => navigate('/resumes') },
       
-      (user?.role?.name !== 'CANDIDATE') || (user?.role?.permissions?.length)
+      (user?.role?.name !== 'CANDIDATE') && (user?.role?.name !== 'USER')
         ? { key: 'admin', label: 'Admin Panel', icon: <UserOutlined />, onClick: () => navigate('/admin') }
         : null,
         

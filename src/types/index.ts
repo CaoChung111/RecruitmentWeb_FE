@@ -103,7 +103,7 @@ export interface JobRequestDTO {
 }
 
 // RESUME
-export type ResumeStatus = 'PENDING' | 'REVIEWING' | 'APPROVED' | 'REJECTED'
+export type ResumeStatus = 'PENDING' | 'REVIEWING' | 'APPROVED' | 'REJECTED' | 'WITHDRAWN' | 'SYSTEM_CANCEL'
 export interface Resume {
   id: number; email: string; url: string; status: ResumeStatus
   companyName: string

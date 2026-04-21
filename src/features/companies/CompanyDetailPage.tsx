@@ -6,6 +6,7 @@ import parse from 'html-react-parser'
 import { companyService } from '../../services/company.service'
 import type { Company } from '../../types'
 import styles from './CompanyDetailPage.module.css'
+import { Color } from 'antd/es/color-picker'
 
 const CompanyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -105,7 +106,7 @@ const CompanyDetailPage: React.FC = () => {
                           {co.logo ? <img src={co.logo} alt={co.name} /> : co.name.charAt(0)}
                         </div>
                         <div>
-                          <div className={styles.gridName}>{co.name}</div>
+                          <div className={styles.gridName} style={{color: 'var(--tx1)'}}>{co.name}</div>
                           <div className={styles.gridAddr}>{co.address}</div>
                         </div>
                       </div>
@@ -131,7 +132,7 @@ const CompanyDetailPage: React.FC = () => {
           {/* Sidebar */}
           <div className={styles.aside}>
             <div className={styles.stickyCard}>
-              <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Actions</div>
+              <div style={{ color: 'var(--tx1)',fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Actions</div>
               <Button 
                 type="primary" 
                 size="large" 

@@ -49,9 +49,7 @@ const AdminRolesPage: React.FC = () => {
       await roleService.remove(id)
       notification.success({ message: 'Deleted' })
       loadRoles()
-    } catch (e: any) {
-
-    }
+    } catch (e: any) { }
   }
 
   const handleDeletePerm = async (id: number) => {
@@ -59,14 +57,10 @@ const AdminRolesPage: React.FC = () => {
       await permissionService.remove(id)
       notification.success({ message: 'Deleted' })
       loadPerms()
-    } catch (e: any) {
-
-    }
+    } catch (e: any) { }
   }
 
-  // 🔥 NHÓM PERMISSIONS THEO MODULE ĐỂ HIỂN THỊ DẠNG CÂY (TREE DATA)
   const groupedPerms = useMemo(() => {
-    // 1. Nhóm dữ liệu theo module
     const groups: Record<string, Permission[]> = {}
     perms.forEach(p => {
       const mod = p.module || 'OTHERS'
@@ -74,21 +68,20 @@ const AdminRolesPage: React.FC = () => {
       groups[mod].push(p)
     })
 
-    // 2. Chuyển đổi thành mảng chứa node cha (module) và node con (permissions)
     return Object.entries(groups).map(([moduleName, modulePerms]) => ({
-      id: `module-${moduleName}`, // ID ảo cho dòng cha (dòng chứa tên module)
+      id: `module-${moduleName}`,
       name: moduleName,
-      isModuleRow: true, // Cờ nhận diện dòng cha
+      isModuleRow: true,
       count: modulePerms.length,
       children: modulePerms.map(p => ({
         ...p,
-        isModuleRow: false // Cờ nhận diện dòng con (dữ liệu thật)
+        isModuleRow: false 
       }))
     }))
   }, [perms])
 
   const roleColumns = [
-    { title: 'Role', dataIndex: 'name', key: 'name', render: (v: string) => <strong>{v}</strong> },
+    { title: 'Role', dataIndex: 'name', key: 'name', render: (v: string) => <strong style={{ color: 'var(--tx1)' }}>{v}</strong> },
     { title: 'Description', dataIndex: 'description', key: 'description' },
     { title: 'Permissions', key: 'perms', render: (_: any, r: Role) => (
       <Space wrap size={4}>
@@ -114,7 +107,6 @@ const AdminRolesPage: React.FC = () => {
       dataIndex: 'name', 
       key: 'name', 
       render: (v: string, r: any) => {
-        // Render dòng Group Module (Dòng cha)
         if (r.isModuleRow) {
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -125,8 +117,7 @@ const AdminRolesPage: React.FC = () => {
             </div>
           )
         }
-        // Render dòng Permission bình thường (Dòng con)
-        return <strong style={{ marginLeft: 8 }}>{v}</strong>
+        return <strong style={{ marginLeft: 8, color: 'var(--tx1)' }}>{v}</strong>
       }
     },
     { 
@@ -134,8 +125,8 @@ const AdminRolesPage: React.FC = () => {
       dataIndex: 'apiPath', 
       key: 'apiPath',
       render: (v: string, r: any) => {
-        if (r.isModuleRow) return null; // Ẩn ở dòng cha
-        return <code style={{ fontFamily:'var(--fm)',fontSize:12,background:'var(--surf2)',padding:'2px 8px',borderRadius:4 }}>{v}</code>
+        if (r.isModuleRow) return null;
+        return <code style={{ fontFamily:'var(--fm)',fontSize:12,background:'var(--surf2)', color:'var(--tx2)', padding:'2px 8px',borderRadius:4, border: '1px solid var(--bdr)' }}>{v}</code>
       }
     },
     { 
@@ -161,7 +152,7 @@ const AdminRolesPage: React.FC = () => {
       key: 'actions', 
       width: 150,
       render: (_: any, r: any) => {
-        if (r.isModuleRow) return null; // Dòng cha không có action sửa xóa
+        if (r.isModuleRow) return null;
         return (
           <Space>
             <Button size="small" onClick={() => { setEditingPerm(r); setPermOpen(true) }}>Edit</Button>
@@ -177,7 +168,7 @@ const AdminRolesPage: React.FC = () => {
   return (
     <div className={styles.root}>
       <div className={styles.pageHead}>
-        <div><h1 className={styles.title}>Roles & Permissions</h1></div>
+        <div><h1 className={styles.title} style={{ color: 'var(--tx1)' }}>Roles & Permissions</h1></div>
       </div>
 
       <Tabs defaultActiveKey="roles" items={[
@@ -201,7 +192,7 @@ const AdminRolesPage: React.FC = () => {
             <div style={{ display:'flex',flexDirection:'column',gap:20 }}>
 
               <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center' }}>
-                <h2 style={{ margin:0 }}>Permission Management</h2>
+                <h2 style={{ margin:0, color: 'var(--tx1)' }}>Permission Management</h2>
                 <Button 
                   type="primary" 
                   icon={<PlusOutlined />} 
@@ -235,17 +226,19 @@ const AdminRolesPage: React.FC = () => {
                         alignItems:'center',
                         width:'100%'
                       }}>
-                        <span style={{ fontWeight:700,fontSize:15 }}>
+                        <span style={{ fontWeight:700,fontSize:15, color: 'var(--tx1)' }}>
                           📦 {moduleName}
                         </span>
                         <Tag>{modulePerms.length} permissions</Tag>
                       </div>
                     }
+                    /* 🔥 FIX LỖI MÀU NỀN TRẮNG LOÁ */
                     style={{
-                      background:'#fff',
-                      borderRadius:14,
-                      marginBottom:12,
-                      boxShadow:'0 4px 12px rgba(0,0,0,0.05)'
+                      background: 'var(--surf)',
+                      border: '1px solid var(--bdr)',
+                      borderRadius: 14,
+                      marginBottom: 12,
+                      overflow: 'hidden'
                     }}
                   >
 
@@ -254,13 +247,15 @@ const AdminRolesPage: React.FC = () => {
                       {modulePerms.map(p => (
                         <div
                           key={p.id}
+                          /* 🔥 FIX LỖI MÀU NỀN BÊN TRONG PANEL */
                           style={{
                             display:'flex',
                             justifyContent:'space-between',
                             alignItems:'center',
                             padding:'10px 14px',
                             borderRadius:10,
-                            background:'#fafafa'
+                            background: 'var(--surf2)',
+                            border: '1px solid var(--bdr)'
                           }}
                         >
                           <div style={{ display:'flex',alignItems:'center',gap:12 }}>
@@ -272,12 +267,16 @@ const AdminRolesPage: React.FC = () => {
                             </Tag>
 
                             <div style={{ display:'flex',flexDirection:'column' }}>
-                              <span style={{ fontWeight:600 }}>{p.name}</span>
+                              <span style={{ fontWeight:600, color: 'var(--tx1)' }}>{p.name}</span>
+                              {/* 🔥 FIX MÀU Ô CODE */}
                               <code style={{
                                 fontSize:12,
-                                background:'#f0f2f5',
+                                background:'var(--surf)',
+                                border: '1px solid var(--bdr)',
+                                color: 'var(--tx2)',
                                 padding:'2px 8px',
-                                borderRadius:6
+                                borderRadius:6,
+                                marginTop: 2
                               }}>
                                 {p.apiPath}
                               </code>

@@ -90,7 +90,7 @@ const HomePage: React.FC = () => {
               onChange={setLocation}
               options={LOCATIONS.map((l) => ({ label: l, value: l }))}
               variant="borderless"
-              style={{ width: 150 }}
+              style={{ width: 150, border: 'none' }}
               allowClear
             />
 

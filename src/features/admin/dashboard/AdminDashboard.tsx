@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Table, Tag, Button } from 'antd'
+import { Table, Tag, Button, Skeleton } from 'antd'
 import { jobService } from '../../../services/job.service'
+import { resumeService } from '../../../services/resume.service'
+import { companyService } from '../../../services/company.service'
+import { userService } from '../../../services/user.service'
 import { useAppSelector } from '../../../store'
 import { selectUser } from '../../../store/slices/authSlice'
 import type { Job } from '../../../types'
@@ -17,17 +20,76 @@ const AdminDashboard: React.FC = () => {
   const isSuperAdmin = user?.role?.name === 'SUPER_ADMIN'
 
   const [jobs, setJobs] = useState<Job[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loadingJobs, setLoadingJobs] = useState(true)
+  
+  // State lưu trữ con số thống kê thực tế
+  const [statsLoading, setStatsLoading] = useState(true)
+  const [stats, setStats] = useState({
+    jobs: 0,
+    resumes: 0,
+    companies: 0,
+    users: 0
+  })
 
-  // Lọc KPI Data: HR chỉ thấy Job và Resume, Super Admin thấy tất cả
+  // Gọi API lấy dữ liệu thực tế
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoadingJobs(true)
+      setStatsLoading(true)
+
+      try {
+        // 1. Lấy danh sách Job cho bảng "Recent Jobs"
+        const apiJobCall = isSuperAdmin ? jobService.getAll : jobService.getCompanyJobs
+        const jobsRes = await apiJobCall({ page: 0, size: 5 })
+        setJobs(jobsRes?.result ?? [])
+
+        // 2. Lấy Thống kê (Chỉ lấy size=1 để backend trả về nhanh nhất, ta chỉ cần meta.totalItems)
+        // Dùng Promise.all để gọi song song, giảm thời gian chờ
+        if (isSuperAdmin) {
+          const [j, r, c, u] = await Promise.all([
+            jobService.getAll({ page: 0, size: 1 }),
+            resumeService.getAll({ page: 0, size: 1 }),
+            companyService.getAll({ page: 0, size: 1 }),
+            userService.getAll({ page: 0, size: 1 })
+          ])
+          setStats({
+            jobs: j?.meta?.totalItems ?? 0,
+            resumes: r?.meta?.totalItems ?? 0,
+            companies: c?.meta?.totalItems ?? 0,
+            users: u?.meta?.totalItems ?? 0
+          })
+        } else {
+          // Nếu là HR: Chỉ đếm Job của công ty và Resume nộp vào công ty
+          const [j, r] = await Promise.all([
+            jobService.getCompanyJobs({ page: 0, size: 1 }),
+            resumeService.getAll({ page: 0, size: 1 }) // Giả định backend resumeService.getAll đã tự filter theo công ty của HR
+          ])
+          setStats({
+            ...stats,
+            jobs: j?.meta?.totalItems ?? 0,
+            resumes: r?.meta?.totalItems ?? 0,
+          })
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu Dashboard:", error)
+      } finally {
+        setLoadingJobs(false)
+        setStatsLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuperAdmin])
+
+  // Lọc KPI Data: Truyền dữ liệu thật từ state `stats` vào
   const KPI_DATA = [
-    { label: 'Active Jobs',   val: '1,284',  icon: '💼', color: '#4f46e5', bg: 'rgba(79,70,229,.1)', change: '+12%', up: true,  path: '/admin/jobs', show: true },
-    { label: 'Total Resumes', val: '5,871',  icon: '📄', color: '#3b82f6', bg: 'rgba(59,130,246,.1)', change: '-3%',  up: false, path: '/admin/resumes', show: true },
-    { label: 'Companies',     val: '342',    icon: '🏢', color: '#7c3aed', bg: 'rgba(124,58,237,.1)', change: '+8%',  up: true,  path: '/admin/companies', show: isSuperAdmin },
-    { label: 'Total Users',   val: '50,421', icon: '👥', color: '#10b981', bg: 'rgba(16,185,129,.1)', change: '+21%', up: true,  path: '/admin/users', show: isSuperAdmin },
+    { label: 'Active Jobs',   val: stats.jobs,      icon: '💼', color: '#4f46e5', bg: 'rgba(79,70,229,.1)', path: '/admin/jobs', show: true },
+    { label: 'Total Resumes', val: stats.resumes,   icon: '📄', color: '#3b82f6', bg: 'rgba(59,130,246,.1)', path: '/admin/resumes', show: true },
+    { label: 'Companies',     val: stats.companies, icon: '🏢', color: '#7c3aed', bg: 'rgba(124,58,237,.1)', path: '/admin/companies', show: isSuperAdmin },
+    { label: 'Total Users',   val: stats.users,     icon: '👥', color: '#10b981', bg: 'rgba(16,185,129,.1)', path: '/admin/users', show: isSuperAdmin },
   ].filter(item => item.show)
 
-  // Lọc Quick Actions tương tự
   const QUICK_ACTIONS = [
     { icon: '💼', label: 'Post a new job',      path: '/admin/jobs', show: true },
     { icon: '📄', label: 'Review applications', path: '/admin/resumes', show: true },
@@ -35,18 +97,6 @@ const AdminDashboard: React.FC = () => {
     { icon: '👥', label: 'Manage users',        path: '/admin/users', show: isSuperAdmin },
     { icon: '🔧', label: 'Manage skills',       path: '/admin/skills', show: isSuperAdmin },
   ].filter(item => item.show)
-
-  useEffect(() => {
-    setLoading(true)
-    
-    // 🔥 CHỌN ĐÚNG API DỰA VÀO ROLE
-    const apiCall = isSuperAdmin ? jobService.getAll : jobService.getCompanyJobs
-    
-    // Lưu ý dùng size thay vì pageSize cho Spring Boot
-    apiCall({ page: 1, size: 5 })
-      .then(d => setJobs(d?.result ?? []))
-      .finally(() => setLoading(false))
-  }, [isSuperAdmin])
 
   const columns = [
     { title: 'Title', dataIndex: 'name', key: 'name', render: (v: string) => <span style={{ fontWeight: 600 }}>{v}</span> },
@@ -61,18 +111,25 @@ const AdminDashboard: React.FC = () => {
       <div className={styles.pageHead}>
         <div>
           <h1 className={styles.title}>Dashboard</h1>
-          <p className={styles.sub}>Welcome back! Here's what's happening.</p>
+          <p className={styles.sub}>Welcome back, {user?.username}! Here's what's happening.</p>
         </div>
       </div>
 
       <div className={styles.kpiGrid}>
-        {KPI_DATA.map(({ label, val, icon, color, bg, change, up, path }) => (
+        {KPI_DATA.map(({ label, val, icon, color, bg, path }) => (
           <div key={label} className={styles.kpiCard} onClick={() => navigate(path)}>
             <div className={styles.kpiTop}>
               <div className={styles.kpiIcon} style={{ background: bg, color }}>{icon}</div>
-              <span className={`${styles.kpiChange} ${up ? styles.up : styles.dn}`}>{change}</span>
+              <span style={{ fontSize: 12, color: 'var(--tx3)', fontWeight: 500 }}>Total records</span>
             </div>
-            <div className={styles.kpiVal}>{val}</div>
+            
+            {/* 🔥 Hiển thị Skeleton nếu đang tải dữ liệu */}
+            {statsLoading ? (
+              <Skeleton.Button active size="small" style={{ width: 80, height: 32, marginTop: 8 }} />
+            ) : (
+              <div className={styles.kpiVal}>{val.toLocaleString()}</div>
+            )}
+            
             <div className={styles.kpiLbl}>{label}</div>
           </div>
         ))}
@@ -84,7 +141,7 @@ const AdminDashboard: React.FC = () => {
             <span className={styles.cardTitle}>Recent Jobs</span>
             <Button type="link" onClick={() => navigate('/admin/jobs')}>View all →</Button>
           </div>
-          <Table dataSource={jobs} columns={columns} rowKey="id" loading={loading}
+          <Table dataSource={jobs} columns={columns} rowKey="id" loading={loadingJobs}
             pagination={false} size="small" />
         </div>
 

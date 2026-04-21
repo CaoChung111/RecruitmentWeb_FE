@@ -11,7 +11,10 @@
 .kpiChange { font-size:11px;font-weight:600;padding:3px 8px;border-radius:var(--rfull); }
 .up { background:#d1fae5;color:#065f46; }
 .dn { background:#fee2e2;color:#991b1b; }
-.kpiVal { font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-.04em;margin-bottom:4px; }
+
+/* FIX: Hiện rõ màu của số KPI */
+.kpiVal { font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-.04em;margin-bottom:4px; color: var(--tx1); }
+
 .kpiLbl { font-size:13px;color:var(--tx2); }
 .twoCol { display:grid;grid-template-columns:1fr 360px;gap:20px; }
 @media(max-width:1100px){.twoCol{grid-template-columns:1fr}}
@@ -20,4 +23,6 @@
 .cardTitle { font-family:var(--fd);font-size:15px;font-weight:700; }
 .quickItem { display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--r8);font-size:14px;font-weight:500;color:var(--tx2);cursor:pointer;transition:all .12s; }
 .quickItem:hover { color:var(--tx1);background:var(--surf2); }
-.tipCard { background:linear-gradient(135deg,var(--p50),#ede9fe);border:1px solid var(--p100);border-radius:var(--r16);padding:18px;display:flex;gap:12px; }
+
+/* FIX: Màu nền của thẻ Tip */
+.tipCard { background: var(--surf2); border:1px solid var(--bdr); border-radius:var(--r16); padding:18px; display:flex; gap:12px; }

@@ -15,7 +15,8 @@ api.interceptors.request.use((config) => {
   
   const isAuthEndpoint = url.includes('/auth/login') || 
                          url.includes('/auth/register') || 
-                         url.includes('/auth/refresh')
+                         url.includes('/auth/refresh') ||
+                         url.includes('/auth/verify-otp');
 
   if (token && !isAuthEndpoint) {
     config.headers['Authorization'] = `Bearer ${token}`
@@ -41,7 +42,7 @@ api.interceptors.response.use(
     const errorMessage = errorData?.message || err.message
 
     // 🔥 1. XỬ LÝ RIÊNG CHO ĐĂNG NHẬP / ĐĂNG KÝ
-    if (url.includes('/auth/login') || url.includes('/auth/register')) {
+    if (url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/verify-otp')) {
       if (status === 401 || status === 400) {
         const msgLower = errorMessage.toLowerCase();
         if (msgLower.includes('vô hiệu hóa') || msgLower.includes('disabled')) {

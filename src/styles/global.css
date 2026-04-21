@@ -39,13 +39,7 @@ body {
   transition: background .3s, color .3s;
 }
 
-h1, h2, h3, h4, h5 {
-  font-family: var(--fd);
-  letter-spacing: -.02em;
-  font-weight: 700;
-  color: var(--tx1);
-}
-
+h1, h2, h3, h4, h5 { font-family: var(--fd); letter-spacing: -.02em; font-weight: 700; color: var(--tx1); }
 a { color: inherit; text-decoration: none }
 img { display: block; max-width: 100% }
 
@@ -53,18 +47,144 @@ img { display: block; max-width: 100% }
 ::-webkit-scrollbar-track { background: transparent }
 ::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: var(--rfull) }
 
-/* ANT OVERRIDES */
+/* --- BẢNG & MODAL & THÔNG BÁO --- */
 .ant-layout, .ant-layout-content { background: var(--surf2) !important }
-.ant-table-wrapper .ant-table { background: var(--surf) !important }
-.ant-table-wrapper .ant-table-thead > tr > th {
-  background: var(--surf2) !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: .07em !important;
-  color: var(--tx3) !important;
-}
-.ant-table-wrapper .ant-table-tbody > tr > td { color: var(--tx1) !important }
+.ant-table-wrapper .ant-table { background: var(--surf) !important; color: var(--tx1) !important; }
+.ant-table-wrapper .ant-table-thead > tr > th { background: var(--surf2) !important; font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: .07em !important; color: var(--tx3) !important; border-bottom: 1px solid var(--bdr) !important; }
+.ant-table-wrapper .ant-table-tbody > tr > td { color: var(--tx1) !important; border-bottom: 1px solid var(--bdr) !important; }
 .ant-table-wrapper .ant-table-tbody > tr:hover > td { background: var(--surf2) !important }
-.ant-modal-content { border-radius: 20px !important; overflow: hidden !important }
-.ant-notification-notice { border-radius: 12px !important; box-shadow: var(--sh-lg) !important }
+ant-table-wrapper .ant-table-placeholder,
+.ant-table-wrapper .ant-table-placeholder:hover,
+.ant-table-wrapper .ant-table-placeholder .ant-table-cell {
+  background-color: var(--surf) !important;
+  border-bottom: 1px solid var(--bdr) !important;
+}
+
+.ant-table-wrapper .ant-table {
+  background: var(--surf) !important;
+  color: var(--tx1) !important;
+}
+
+/* Header của bảng */
+.ant-table-wrapper .ant-table-thead > tr > th {
+  background: var(--surf2) !important; /* Nền xám nhạt */
+  color: var(--tx1) !important;       /* Chữ theo theme */
+  border-bottom: 1px solid var(--bdr) !important;
+}
+
+/* Các dòng dữ liệu (Rows) */
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  background: var(--surf) !important;  /* Nền trắng/xanh đen theo theme */
+  color: var(--tx1) !important;       /* Chữ theo theme */
+  border-bottom: 1px solid var(--bdr) !important;
+}
+
+/* Khi di chuột vào dòng */
+.ant-table-wrapper .ant-table-tbody > tr:hover > td {
+  background: var(--surf2) !important;
+}
+
+.ant-table-wrapper .ant-table-placeholder > td {
+  background: var(--surf) !important;
+  color: var(--tx2) !important;
+  border-bottom: 1px solid var(--bdr) !important;
+}
+
+/* Xử lý phần chữ "No data" */
+.ant-empty-description {
+  color: var(--tx2) !important;
+}
+
+.ant-modal-content { border-radius: 20px !important; overflow: hidden !important; background: var(--surf) !important; }
+.ant-modal-header { background: var(--surf) !important; border-bottom: 1px solid var(--bdr) !important; }
+.ant-modal-title { color: var(--tx1) !important; }
+.ant-notification-notice { border-radius: 12px !important; box-shadow: var(--sh-lg) !important; background: var(--surf) !important; color: var(--tx1) !important; }
+.ant-notification-notice-message { color: var(--tx1) !important; }
+
+/* --- 1. SỬA LỖI NÚT BẤM (BUTTONS) --- */
+.ant-btn { box-shadow: none !important; outline: none !important; }
+.ant-btn-primary { background-color: var(--p600) !important; color: #fff !important; border: none !important; box-shadow: 0 2px 6px rgba(79,70,229,.3) !important; }
+.ant-btn-primary:hover { background-color: var(--p500) !important; color: #fff !important; box-shadow: 0 4px 12px rgba(79,70,229,.4) !important; }
+.ant-btn-primary:disabled, .ant-btn-primary.ant-btn-disabled { background-color: var(--surf3) !important; color: var(--tx3) !important; box-shadow: none !important; border: 1px solid var(--bdr) !important; }
+
+/* Nút Default */
+.ant-btn-default:not(.ant-btn-dangerous) { background-color: var(--surf) !important; color: var(--tx1) !important; border: 1px solid var(--bdr) !important; box-shadow: none !important; }
+.ant-btn-default:not(.ant-btn-dangerous):hover { background-color: var(--p50) !important; color: var(--p600) !important; border-color: var(--p600) !important; }
+
+/* Nút Danger (Delete) */
+.ant-btn-dangerous.ant-btn-default { 
+  color: var(--red) !important; 
+  border-color: var(--red) !important; 
+  background-color: transparent !important; 
+  box-shadow: none !important; 
+}
+.ant-btn-dangerous.ant-btn-default:hover { color: var(--red) !important; border-color: var(--red) !important; background-color: rgba(239, 68, 68, 0.1) !important; }
+
+/* Nút Text */
+.ant-btn-text:not(.ant-btn-dangerous) { color: var(--tx1) !important; background-color: transparent !important; }
+.ant-btn-text:not(.ant-btn-dangerous):hover { background-color: var(--bdr) !important; color: var(--p600) !important; }
+.ant-btn-text.ant-btn-dangerous { color: var(--red) !important; background-color: transparent !important; }
+.ant-btn-text.ant-btn-dangerous:hover { background-color: rgba(239, 68, 68, 0.1) !important; }
+
+/* Nút Dashed & Tìm kiếm */
+.ant-btn-dashed:focus, .ant-btn-dashed:active { background-color: var(--p50) !important; color: var(--p600) !important; border-color: var(--p600) !important; }
+.ant-btn-dashed:hover { background-color: var(--p100) !important; }
+.ant-input-group-addon .ant-btn { background-color: var(--p600) !important; color: #fff !important; border: none !important; }
+.ant-input-group-addon .ant-btn:hover { background-color: var(--p500) !important; }
+
+
+/* --- 2. SỬA LỖI Ô INPUT, SELECT & UPLOAD ẢNH --- */
+.ant-select:not(.ant-select-customize-input) .ant-select-selector, .ant-input, .ant-input-password, .ant-input-number, .ant-input-number-input, .ant-input-affix-wrapper { background-color: var(--surf) !important; color: var(--tx1) !important; border-color: var(--bdr) !important; }
+.ant-input-affix-wrapper > input.ant-input { background-color: transparent !important; color: var(--tx1) !important; }
+.ant-input::placeholder, .ant-select-selection-placeholder { color: var(--tx3) !important; }
+.ant-select-arrow, .ant-input-clear-icon, .ant-input-password-icon { color: var(--tx3) !important; }
+.ant-upload-wrapper .ant-upload-select { background-color: var(--surf2) !important; border-color: var(--bdr) !important; color: var(--tx1) !important; }
+.ant-upload-wrapper .ant-upload-select:hover { border-color: var(--p600) !important; }
+
+
+/* --- 3. MENU DROPDOWN & AVATAR --- */
+.ant-select-dropdown, .ant-dropdown-menu, .ant-popover-inner { background-color: var(--surf) !important; border: 1px solid var(--bdr) !important; box-shadow: var(--sh-md) !important; }
+.ant-select-item { color: var(--tx1) !important; }
+.ant-select-item-option-active, .ant-select-item-option-selected { background-color: var(--surf2) !important; color: var(--p600) !important; }
+.ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title { color: var(--tx1) !important; }
+.ant-dropdown-menu-item:hover { background-color: var(--surf2) !important; }
+.ant-dropdown-menu-item:last-child { color: var(--red) !important; }
+.ant-dropdown-menu-item:last-child:hover { background-color: rgba(239, 68, 68, 0.1) !important; }
+
+
+/* --- 4. CHECKBOX, RADIO, LABELS, SEGMENTED & TABS --- */
+.ant-checkbox-inner { background-color: var(--surf) !important; border-color: var(--bdr) !important; }
+.ant-checkbox-checked .ant-checkbox-inner { background-color: var(--p600) !important; border-color: var(--p600) !important; }
+.ant-checkbox-wrapper span, .ant-radio-wrapper span, .ant-form-item-label > label { color: var(--tx1) !important; }
+.ant-segmented { background-color: var(--surf2) !important; color: var(--tx2) !important; }
+.ant-segmented-item-selected { background-color: var(--surf) !important; color: var(--tx1) !important; }
+.ant-tabs-tab { color: var(--tx2) !important; }
+.ant-tabs-tab-active .ant-tabs-tab-btn { color: var(--p600) !important; }
+
+
+/* --- 5. EMPTY STATE & PAGINATION --- */
+.ant-empty-description { color: var(--tx2) !important; }
+.ant-table-wrapper .ant-table-placeholder > td { background: var(--surf) !important; color: var(--tx2) !important; border-bottom: 1px solid var(--bdr) !important; }
+.ant-pagination-total-text { color: var(--tx2) !important; }
+.ant-pagination-item { background-color: var(--surf) !important; border-color: var(--bdr) !important; }
+.ant-pagination-item a { color: var(--tx1) !important; }
+.ant-pagination-item-active { background-color: var(--p50) !important; border-color: var(--p600) !important; }
+.ant-pagination-item-active a { color: var(--p600) !important; }
+.ant-pagination-prev .ant-pagination-item-link, .ant-pagination-next .ant-pagination-item-link { background-color: var(--surf) !important; color: var(--tx1) !important; border-color: var(--bdr) !important; }
+
+
+/* --- 6. DATE PICKER --- */
+.ant-picker { background-color: var(--surf) !important; border-color: var(--bdr) !important; }
+.ant-picker-input > input { color: var(--tx1) !important; }
+.ant-picker-suffix { color: var(--tx3) !important; }
+.ant-picker-panel-container { background-color: var(--surf) !important; border: 1px solid var(--bdr) !important; }
+.ant-picker-header, .ant-picker-header button, .ant-picker-content th, .ant-picker-cell-inner { color: var(--tx1) !important; }
+.ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner { background-color: var(--p600) !important; color: #fff !important; }
+
+
+/* --- 7. REACT QUILL --- */
+.ql-toolbar.ql-snow { background-color: var(--surf2) !important; border-color: var(--bdr) !important; }
+.ql-container.ql-snow { background-color: var(--surf) !important; color: var(--tx1) !important; border-color: var(--bdr) !important; }
+.ql-snow .ql-stroke { stroke: var(--tx1) !important; }
+.ql-snow .ql-fill { fill: var(--tx1) !important; }
+.ql-snow.ql-toolbar button:hover .ql-stroke { stroke: var(--p600) !important; }

@@ -5,6 +5,10 @@ import { jobService } from '../../../services/job.service'
 import type { Job, Company, Skill } from '../../../types'
 import { JOB_LEVELS, JOB_STATUS } from '../../../constants'
 
+// 🔥 Import ReactQuill
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+
 interface Props {
   open: boolean
   onClose: () => void
@@ -60,7 +64,7 @@ const JobModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, companie
   }
 
   return (
-    <Modal title={editing ? 'Edit Job' : 'Add New Job'} open={open} onCancel={onClose} footer={null} width={640} centered>
+    <Modal title={editing ? 'Edit Job' : 'Add New Job'} open={open} onCancel={onClose} footer={null} width={700} centered>
       <Form form={form} layout="vertical" onFinish={handleSave} style={{ marginTop: 16 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <Form.Item name="name" label="Job Title" rules={[{ required: true }]}>
@@ -104,8 +108,13 @@ const JobModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, companie
           />
         </Form.Item>
 
+        {/* 🔥 Đã đổi sang ReactQuill */}
         <Form.Item name="description" label="Description">
-          <Input.TextArea rows={4} />
+          <ReactQuill 
+            theme="snow" 
+            placeholder="About the job, responsibilities, requirements..."
+            style={{ height: '220px', marginBottom: '50px' }} 
+          />
         </Form.Item>
 
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>

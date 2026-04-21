@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { Button, Dropdown, Avatar } from 'antd'
-import { BulbOutlined, LogoutOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons'
+import { BulbOutlined, LogoutOutlined, UserOutlined, FileTextOutlined, BellOutlined } from '@ant-design/icons'
 import { useAppDispatch, useAppSelector } from '../store'
 import { logoutThunk, selectUser, selectIsAuth } from '../store/slices/authSlice'
 import { useTheme } from '../hooks/useTheme'
 import { Footer } from './Footer'
+import JobAlertModal from './JobAlertModal' // 🔥 Import the newly separated Modal
 import styles from './ClientLayout.module.css'
 
 const ClientLayout: React.FC = () => {
@@ -15,6 +16,9 @@ const ClientLayout: React.FC = () => {
   const isAuth   = useAppSelector(selectIsAuth)
   const user     = useAppSelector(selectUser)
   const { isDark, toggle } = useTheme()
+
+  // 🔥 State for managing the Job Alert Modal
+  const [subOpen, setSubOpen] = useState(false)
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 16)
@@ -30,11 +34,9 @@ const ClientLayout: React.FC = () => {
   const userMenu = {
     items: [
       { key: 'resumes', label: 'My Applications', icon: <FileTextOutlined />, onClick: () => navigate('/resumes') },
-      
       (user?.role?.name !== 'CANDIDATE') && (user?.role?.name !== 'USER')
         ? { key: 'admin', label: 'Admin Panel', icon: <UserOutlined />, onClick: () => navigate('/admin') }
         : null,
-        
       { type: 'divider' as const },
       { key: 'logout', label: <span style={{ color: '#ef4444' }}>Sign out</span>, icon: <LogoutOutlined />, onClick: handleLogout },
     ].filter(Boolean) as any[],
@@ -58,6 +60,16 @@ const ClientLayout: React.FC = () => {
           </nav>
 
           <div className={styles.actions}>
+            {/* 🔥 Job Alerts Subscription Button */}
+            <Button 
+              type="dashed" 
+              icon={<BellOutlined />} 
+              onClick={() => setSubOpen(true)}
+              style={{ color: 'var(--p600)', borderColor: 'var(--p600)', background: 'var(--p50)' }}
+            >
+              Job Alerts
+            </Button>
+
             <button className={styles.themeBtn} onClick={toggle}>
               <BulbOutlined style={{ color: isDark ? '#f59e0b' : undefined }} />
             </button>
@@ -86,6 +98,9 @@ const ClientLayout: React.FC = () => {
       </main>
 
       <Footer />
+
+      {/* 🔥 Render the Job Alert Modal */}
+      <JobAlertModal open={subOpen} onClose={() => setSubOpen(false)} />
     </div>
   )
 }

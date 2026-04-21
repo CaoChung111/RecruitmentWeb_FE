@@ -5,11 +5,13 @@
   transition: transform .2s, box-shadow .2s, border-color .2s;
 }
 .card:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); border-color: var(--p200); }
+
+/* FIX: Không hardcode màu xám nữa */
 .expired {
   opacity: 0.6;
-  background-color: #f8f9fa;
+  background-color: var(--surf2);
   filter: grayscale(0.8);
-  border: 1px solid #eee;
+  border-color: var(--bdr) !important;
   pointer-events: none;
 }
 .featured { border-color: var(--p200); background: linear-gradient(135deg,rgba(79,70,229,.03) 0%,var(--surf) 100%); }
@@ -67,3 +69,41 @@
 .salary { font-family: var(--fd); font-size: 16px; font-weight: 800; color: var(--p600); letter-spacing: -.02em; }
 .footerRight { display: flex; align-items: center; gap: 8px; }
 .time { font-size: 11.5px; color: var(--tx3); }
+.ribbonBase {
+  position: absolute;
+  top: 12px;
+  right: -26px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: #fff;
+
+  transform: rotate(30deg);
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.ribbonFeatured {
+  composes: ribbonBase;
+  padding: 4px 36px;
+  background: linear-gradient(135deg,#4f46e5,#7c3aed);
+  box-shadow: 0 2px 8px rgba(79,70,229,.4);
+}
+.ribbonNew {
+  composes: ribbonBase;
+  padding: 4px 55px;
+  background: linear-gradient(135deg,#10b981,#22c55e);
+  box-shadow: 0 2px 8px rgba(16,185,129,.4);
+}
+.new {
+  border-color: #10b981;
+  background: linear-gradient(
+    135deg,
+    rgba(16,185,129,.04) 0%,
+    var(--surf) 100%
+  );
+}

@@ -85,7 +85,7 @@ const RoleModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, allPerm
 
   return (
     <Modal 
-      title={editing ? 'Cập nhật Role' : 'Tạo mới Role'} 
+      title={editing ? 'Edit Role' : 'Add Role'} 
       open={open} 
       onCancel={onClose} 
       footer={null} 
@@ -94,18 +94,18 @@ const RoleModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, allPerm
       destroyOnClose
     >
       <Form form={form} layout="vertical" onFinish={handleSave} style={{ marginTop: 16 }}>
-        <Form.Item name="name" label="Tên Role" rules={[{ required: true, message: 'Vui lòng nhập tên Role' }]}>
-          <Input placeholder="VD: RECRUITER, HR_MANAGER..." />
+        <Form.Item name="name" label="Role Name" rules={[{ required: true, message: 'Please enter the Role name' }]}>
+          <Input placeholder="e.g., RECRUITER, HR_MANAGER..." />
         </Form.Item>
-        <Form.Item name="description" label="Mô tả">
-          <Input.TextArea rows={2} placeholder="Mô tả quyền hạn của Role này" />
+        <Form.Item name="description" label="Description">
+          <Input.TextArea rows={2} placeholder="Describe the permissions for this role" />
         </Form.Item>
         <Form.Item name="active" valuePropName="checked" initialValue={true}>
-          <Checkbox>Trạng thái kích hoạt (Active)</Checkbox>
+          <Checkbox>Status (Active)</Checkbox>
         </Form.Item>
         
         {/* 🔥 ĐÃ FIX LỖI: Dùng Form.Item bọc ngoài (chỉ để lấy Label), và Form.Item noStyle bọc sát Checkbox.Group */}
-        <Form.Item label="Phân bổ Quyền hạn (Permissions)">
+        <Form.Item label="Permissions">
           <div style={{ maxHeight: 400, overflowY: 'auto', border: '1px solid var(--bdr)', borderRadius: 8, padding: 8 }}>
             <Form.Item name="permissions" noStyle>
               <Checkbox.Group style={{ width: '100%' }}>
@@ -116,8 +116,8 @@ const RoleModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, allPerm
         </Form.Item>
 
         <div style={{ display:'flex', gap:8, justifyContent:'flex-end', marginTop: 24 }}>
-          <Button onClick={onClose}>Hủy</Button>
-          <Button type="primary" htmlType="submit" loading={saving}>{editing ? 'Cập nhật' : 'Tạo mới'}</Button>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button type="primary" htmlType="submit" loading={saving}>{editing ? 'Update' : 'Create'}</Button>
         </div>
       </Form>
     </Modal>

@@ -79,7 +79,7 @@ const AdminSkillsPage: React.FC = () => {
       </div>
 
       <div style={{ background:'var(--surf)',border:'1px solid var(--bdr)',borderRadius:16,padding:20 }}>
-        <div style={{ fontFamily:'var(--fd)',fontWeight:700,fontSize:14,marginBottom:14 }}>All Skills</div>
+        <div style={{color:'var(--tx1)', fontFamily:'var(--fd)',fontWeight:700,fontSize:14,marginBottom:14 }}>All Skills</div>
         <div style={{ display:'flex',flexWrap:'wrap',gap:8 }}>
           {skills.map(s => (
             <Tag key={s.id} color="blue" style={{ fontSize:13,padding:'4px 14px',cursor:'pointer' }}

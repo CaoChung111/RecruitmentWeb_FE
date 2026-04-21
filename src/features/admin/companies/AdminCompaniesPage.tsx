@@ -115,9 +115,9 @@ const AdminCompaniesPage: React.FC = () => {
                   {co.logo ? <img src={co.logo} alt="" style={{ width:'100%',height:'100%',objectFit:'contain' }} /> : co.name.charAt(0)}
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2 }}>
+                  <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 2, color: 'var(--tx1)' }}>
                     {co.name}
-                    {isTrashView && <span style={{ color: 'red', fontSize: 12, marginLeft: 8 }}>(INACTIVE)</span>}
+                    {isTrashView && <span style={{ color: 'var(--red)', fontSize: 12, marginLeft: 8 }}>(INACTIVE)</span>}
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--tx3)' }}>{co.address}</div>
                 </div>

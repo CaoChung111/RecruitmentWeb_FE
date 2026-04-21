@@ -122,7 +122,18 @@ export interface User {
 
 // SUBSCRIBER
 export interface Subscriber {
-  id: number; name: string; email: string; skills: Skill[]
+  id: number;
+  name: string;
+  email: string;
+  skills?: Skill[]; // Thường subscriber sẽ đăng ký nhận email theo Skill
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface SubscriberRequestDTO {
+  name: string;
+  email: string;
+  skills: number[]; // Mảng ID của các Skill
 }
 
 // ==========================================

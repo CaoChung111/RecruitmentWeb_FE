@@ -6,7 +6,6 @@ import type { Resume, ResumeStatus } from '../../../types'
 import { formatRelativeTime } from '../../../utils/format'
 import styles from '../AdminPage.module.css'
 
-// 1. Mảng Options dùng cho thao tác Đổi trạng thái trong Bảng
 const UPDATE_STATUS_OPTIONS: { label: string; value: ResumeStatus }[] = [
   { label: 'Pending',   value: 'PENDING' },
   { label: 'Reviewing', value: 'REVIEWING' },
@@ -14,14 +13,12 @@ const UPDATE_STATUS_OPTIONS: { label: string; value: ResumeStatus }[] = [
   { label: 'Rejected',  value: 'REJECTED' },
 ]
 
-// 2. Mảng Options dùng cho Thanh Tìm Kiếm
 const FILTER_STATUS_OPTIONS: { label: string; value: ResumeStatus }[] = [
   ...UPDATE_STATUS_OPTIONS,
   { label: 'Withdrawn', value: 'WITHDRAWN' as ResumeStatus },
   { label: 'System Cancel', value: 'SYSTEM_CANCEL' as ResumeStatus },
 ]
 
-// 3. KPI Cards
 const KPI = [
   { label: 'Pending',   status: 'PENDING',   color: '#f59e0b', bg: 'rgba(245,158,11,.1)' },
   { label: 'Reviewing', status: 'REVIEWING', color: '#3b82f6', bg: 'rgba(59,130,246,.1)'  },
@@ -93,7 +90,8 @@ const AdminResumesPage: React.FC = () => {
   const columns = [
     { title: 'Candidate', key: 'user', render: (_: any, r: Resume) => (
       <div>
-        <div style={{ fontWeight: 600 }}>{r.user?.name}</div>
+        {/* 🔥 FIX 1: Thêm color: var(--tx1) để tên hiển thị rõ nét */}
+        <div style={{ fontWeight: 600, color: 'var(--tx1)' }}>{r.user?.name}</div>
         <div style={{ fontSize: 12, color: 'var(--tx3)' }}>{r.email}</div>
       </div>
     )},
@@ -130,11 +128,9 @@ const AdminResumesPage: React.FC = () => {
       title: '', 
       key: 'actions', 
       render: (_: any, r: Resume) => {
-        // 🔥 ẨN NÚT DELETE khi status là WITHDRAWN hoặc SYSTEM_CANCEL
         if (r.status === 'WITHDRAWN' || r.status === 'SYSTEM_CANCEL') {
           return null; 
         }
-
         return (
           <Popconfirm title="Delete?" onConfirm={() => handleDelete(r.id)} okButtonProps={{ danger: true }}>
             <Button size="small" danger>Delete</Button>
@@ -148,7 +144,8 @@ const AdminResumesPage: React.FC = () => {
     <div className={styles.root}>
       <div className={styles.pageHead}>
         <div>
-          <h1 className={styles.title}>Resumes</h1>
+          {/* 🔥 FIX 2: Chắc chắn tiêu đề cũng lấy đúng màu */}
+          <h1 className={styles.title} style={{ color: 'var(--tx1)' }}>Resumes</h1>
           <p className={styles.sub}>{total.toLocaleString()} total applications</p>
         </div>
         <Space>
@@ -171,7 +168,6 @@ const AdminResumesPage: React.FC = () => {
         </Space>
       </div>
 
-      {/* KPI */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 }}>
         {KPI.map(({ label, status, color, bg }) => (
           <div key={status} style={{ background:'var(--surf)',border:'1px solid var(--bdr)',borderRadius:16,padding:18,cursor:'pointer' }}
@@ -179,7 +175,10 @@ const AdminResumesPage: React.FC = () => {
             <div style={{ width:40,height:40,borderRadius:10,background:bg,color,display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,marginBottom:10 }}>
               {status === 'PENDING' ? '⏳' : status === 'REVIEWING' ? '🔍' : status === 'APPROVED' ? '✅' : '❌'}
             </div>
-            <div style={{ fontFamily:'var(--fd)',fontSize:26,fontWeight:800,letterSpacing:'-.04em',marginBottom:2 }}>{counts[status] ?? '—'}</div>
+            {/* 🔥 FIX 3: Ép màu --tx1 cho các con số (0) để chúng không bị chìm */}
+            <div style={{ fontFamily:'var(--fd)',fontSize:26,fontWeight:800,letterSpacing:'-.04em',marginBottom:2, color: 'var(--tx1)' }}>
+              {counts[status] ?? '0'}
+            </div>
             <div style={{ fontSize:13,color:'var(--tx2)' }}>{label}</div>
           </div>
         ))}

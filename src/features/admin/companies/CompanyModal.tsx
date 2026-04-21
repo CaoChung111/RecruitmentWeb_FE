@@ -125,7 +125,7 @@ const CompanyModal: React.FC<Props> = ({ open, onClose, onSuccess, editing }) =>
         <Form.Item name="description" label="Description">
           <ReactQuill 
             theme="snow" 
-            placeholder="Viết mô tả công ty ở đây..."
+            placeholder="About company..."
             style={{ 
               height: '200px', 
               marginBottom: '40px'

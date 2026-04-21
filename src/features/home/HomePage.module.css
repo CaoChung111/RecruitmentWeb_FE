@@ -20,7 +20,7 @@
   border-radius:50px;padding:6px 6px 6px 20px;max-width:640px;margin:0 auto 16px;
   box-shadow:var(--sh-lg);
 }
-.searchIcon { color:var(--tx3);flex-shrink:0;font-size:16px; }
+.searchIcon { color:var(--tx3);flex-shrink:0;font-size:16px; margin-right: 10px;}
 .searchInput { flex:1;border:none;outline:none;font-family:var(--fb);font-size:14.5px;color:var(--tx1);background:transparent;min-width:0;margin-left:8px; }
 .searchInput::placeholder { color:var(--tx3); }
 .divider { width:1px;height:26px;background:var(--bdr);margin:0 14px;flex-shrink:0; }

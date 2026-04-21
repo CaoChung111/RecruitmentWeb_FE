@@ -41,6 +41,7 @@ const JobListPage: React.FC = () => {
     setLoading(true)
     try {
       let queryParts: string[] = []
+      queryParts.push(`active ! 'DRAFT'`)
 
       // 1. Search keyword
       if (keyword) queryParts.push(`name ~ '${keyword}'`)
@@ -119,9 +120,8 @@ const JobListPage: React.FC = () => {
         <div className={styles.layout}>
           <aside className={styles.sidebar}>
             <div className={styles.filterHdr}>
-              <span style={{ fontWeight: 700 }}><FilterOutlined /> Filters</span>
+              <span style={{ fontWeight: 700, color: 'var(--tx1)' }}><FilterOutlined /> Filters</span>
             </div>
-            
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Company</label>
                 <Select 
@@ -152,16 +152,19 @@ const JobListPage: React.FC = () => {
             
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Location</label>
-              <Select allowClear options={LOCATIONS.map((l) => ({ label: l, value: l }))} value={location} onChange={setLocation} style={{ width: '100%' }} />
+              <Select allowClear options={LOCATIONS.map((l) => ({ label: l, value: l }))} value={location} onChange={setLocation} style={{ width: '100%' }} placeholder="Search location..." />
             </div>
             
             <div className={styles.filterGroup}>
               <label className={styles.filterLabel}>Level</label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                 {JOB_LEVELS.map(({ label, value }) => (
-                  <Checkbox key={value} checked={levels.includes(value)}
-                    onChange={(e) => setLevels(e.target.checked ? [...levels, value] : levels.filter((l) => l !== value))}>
-                    {label}
+                  <Checkbox 
+                    key={value} 
+                    checked={levels.includes(value)}
+                    onChange={(e) => setLevels(e.target.checked ? [...levels, value] : levels.filter((l) => l !== value))}
+                  >
+                    {label} 
                   </Checkbox>
                 ))}
               </div>

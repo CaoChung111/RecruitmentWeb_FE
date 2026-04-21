@@ -14,11 +14,9 @@ const LoginPage: React.FC = () => {
   const { loading } = useAppSelector(selectAuth)
   const isAuthenticated = useAppSelector(selectIsAuth)
 
-  // Lấy callback url từ query params (nếu có)
   const params = new URLSearchParams(location.search)
   const callback = params?.get("callback")
 
-  // Nếu đã đăng nhập thì tự động chuyển hướng, không cho ở lại trang Login
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/')
@@ -29,11 +27,7 @@ const LoginPage: React.FC = () => {
     const res = await dispatch(loginThunk(values))
     if (loginThunk.fulfilled.match(res)) {
       notification.success({ message: 'Welcome back!' })
-      // Ưu tiên navigate về trang callback, nếu không có thì về trang chủ
       navigate(callback ? callback : '/') 
-    } else {
-      // Đã comment thông báo lỗi ở đây vì file api.ts interceptor đã tự động báo lỗi rồi
-      // notification.error({ message: 'Sign in failed', description: res.payload as string })
     }
   }
 
@@ -45,7 +39,8 @@ const LoginPage: React.FC = () => {
       </div>
 
       <Form layout="vertical" onFinish={onFinish} requiredMark={false}>
-        <Form.Item name="username" label="Email" rules={[{ required: true, message: 'Vui lòng nhập email!' }]}>
+        {/* 🔥 Translated validation message */}
+        <Form.Item name="username" label="Email" rules={[{ required: true, message: 'Please enter your email!' }]}>
           <Input size="large" type="email" placeholder="you@example.com" />
         </Form.Item>
         <Form.Item
@@ -56,7 +51,8 @@ const LoginPage: React.FC = () => {
               <Link to="/forgot-password" style={{ fontSize: 13, color: 'var(--p600)' }}>Forgot?</Link>
             </div>
           }
-          rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+          // 🔥 Translated validation message
+          rules={[{ required: true, message: 'Please enter your password!' }]}
         >
           <Input.Password size="large" placeholder="••••••••" />
         </Form.Item>

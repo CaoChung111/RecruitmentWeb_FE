@@ -14,10 +14,30 @@ const CompanyListPage: React.FC = () => {
   const [page, setPage] = useState(1)
   const [keyword, setKeyword] = useState('')
 
+  // 🔥 Tự động reset về trang 1 khi người dùng gõ tìm kiếm mới
+  useEffect(() => {
+    setPage(1)
+  }, [keyword])
+
   useEffect(() => {
     setLoading(true)
-    companyService.getAll({ page, size: 12, filter: keyword })
-      .then(d => { setCompanies(d?.result ?? []); setTotal(d?.meta.totalItems ?? 0) })
+
+    // 🔥 Áp dụng cách build Params y hệt trang Admin
+    const params: any = { 
+      page: page, 
+      size: 12 
+    }
+    
+    // Nếu có nhập keyword thì mới nối chuỗi filter
+    if (keyword.trim()) {
+      params.filter = `name~'*${keyword}*'`
+    }
+
+    companyService.getAll(params)
+      .then(d => { 
+        setCompanies(d?.result ?? []); 
+        setTotal(d?.meta?.totalItems ?? 0) 
+      })
       .finally(() => setLoading(false))
   }, [page, keyword])
 
@@ -29,9 +49,15 @@ const CompanyListPage: React.FC = () => {
             <h1 className={styles.title}>Top Companies</h1>
             <p className={styles.sub}>{total.toLocaleString()} companies hiring</p>
           </div>
-          <Input.Search placeholder="Search companies..." value={keyword}
-            onChange={e => setKeyword(e.target.value)} style={{ width: 260 }}
-            prefix={<SearchOutlined />} size="large" allowClear />
+          <Input.Search 
+            placeholder="Search companies..." 
+            value={keyword}
+            onChange={e => setKeyword(e.target.value)} 
+            style={{ width: 260 }}
+            prefix={<SearchOutlined style={{ color: 'var(--tx3)' }} />} 
+            size="large" 
+            allowClear 
+          />
         </div>
 
         {loading ? (
@@ -41,12 +67,14 @@ const CompanyListPage: React.FC = () => {
             ))}
           </div>
         ) : companies.length === 0 ? (
-          <Empty description="No companies found" style={{ padding: '60px 0' }} />
+          <Empty 
+            description={<span style={{ color: 'var(--tx2)' }}>No companies found</span>} 
+            style={{ padding: '60px 0' }} 
+          />
         ) : (
           <div className={styles.grid}>
             {companies.map(co => (
-              // Click vào thẻ -> chuyển đến trang chi tiết
-              <div key={co.id} className={styles.card} onClick={() => navigate(`/companies/${co.id}`)} style={{ cursor: 'pointer' }}>
+              <div key={co.id} className={styles.card} onClick={() => navigate(`/companies/${co.id}`)}>
                 <div className={styles.logoWrap}>
                   <div className={styles.logo}>
                     {co.logo ? <img src={co.logo} alt={co.name} /> : co.name.charAt(0)}
@@ -57,15 +85,14 @@ const CompanyListPage: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Footer với 2 nút hành động */}
-                <div className={styles.footer} style={{ marginTop: 16, display: 'flex', gap: 8 }}>
+                <div className={styles.footer}>
                   <Button size="small" block>Details</Button>
                   <Button 
                     type="primary" 
                     size="small" 
                     block 
                     onClick={(e) => {
-                      e.stopPropagation(); // Ngăn không cho sự kiện click lan ra thẻ cha
+                      e.stopPropagation(); 
                       navigate(`/jobs?company=${co.id}`);
                     }}
                   >
@@ -77,10 +104,17 @@ const CompanyListPage: React.FC = () => {
           </div>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
-          <Pagination current={page} total={total} pageSize={12}
-            onChange={setPage} showTotal={t => `${t} companies`} />
-        </div>
+        {total > 0 && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
+            <Pagination 
+              current={page} 
+              total={total} 
+              pageSize={12}
+              onChange={setPage} 
+              showTotal={t => <span style={{ color: 'var(--tx2)', fontWeight: 500 }}>{t} companies</span>} 
+            />
+          </div>
+        )}
       </div>
     </div>
   )

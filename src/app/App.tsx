@@ -26,6 +26,7 @@ import AdminSkillsPage from '../features/admin/skills/AdminSkillsPage'
 import AdminRolesPage from '../features/admin/roles/AdminRolesPage'
 import NotPermittedPage from '../features/auth/NotPermittedPage';
 import '../styles/global.css'
+import AdminSubscribersPage from '@/features/admin/subscribers/AdminSubscriberPage'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isAuth = useAppSelector(selectIsAuth)
@@ -81,6 +82,7 @@ const AppContent: React.FC = () => {
             <Route path="users" element={<AdminUsersPage />} />
             <Route path="skills" element={<AdminSkillsPage />} />
             <Route path="roles" element={<AdminRolesPage />} />
+            <Route path="subscribers" element={<AdminSubscribersPage />} />
           </Route>
           <Route path="/not-permitted" element={<NotPermittedPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

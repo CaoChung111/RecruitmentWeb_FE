@@ -6,6 +6,7 @@ import {
   FileDoneOutlined, TeamOutlined, ToolOutlined,
   SafetyOutlined, LogoutOutlined, BellOutlined,
   MenuFoldOutlined, MenuUnfoldOutlined, BulbOutlined,
+  MailOutlined // 🔥 Thêm icon Mail cho Subscribers
 } from '@ant-design/icons'
 import { useAppDispatch, useAppSelector } from '../store'
 import { logoutThunk, selectUser } from '../store/slices/authSlice'
@@ -20,27 +21,26 @@ const AdminLayout: React.FC = () => {
   const user      = useAppSelector(selectUser)
   const { isDark, toggle } = useTheme()
 
-  // 🔥 Logic lọc Menu động dựa trên mảng permissions của user
   const filteredNav = useMemo(() => {
     const permissions = user?.role?.permissions || []
     
-    // Hàm kiểm tra quyền
     const hasPerm = (req: any) => 
       permissions.some((p: any) => p.apiPath === req.apiPath && p.method === req.method)
     
-    // Check Super Admin hoặc ACL Enable
     const isSuper = user?.role?.name === 'SUPER_ADMIN' || import.meta.env.VITE_ACL_ENABLE === 'false'
 
-    // Khai báo mảng Nav gốc kèm điều kiện hiển thị (show)
     return [
-      { label: 'Dashboard', path: '/admin', icon: <DashboardOutlined />, show: true }, // Luôn hiện
+      { label: 'Dashboard', path: '/admin', icon: <DashboardOutlined />, show: true },
       { label: 'Jobs', path: '/admin/jobs', icon: <FileTextOutlined />, show: isSuper || hasPerm(ALL_PERMISSIONS.JOBS.GET_PAGINATE) },
       { label: 'Companies', path: '/admin/companies', icon: <BankOutlined />, show: isSuper || hasPerm(ALL_PERMISSIONS.COMPANIES.GET_PAGINATE) },
       { label: 'Resumes', path: '/admin/resumes', icon: <FileDoneOutlined />, show: isSuper || hasPerm(ALL_PERMISSIONS.RESUMES.GET_PAGINATE) },
       { label: 'Users', path: '/admin/users', icon: <TeamOutlined />, show: isSuper || hasPerm(ALL_PERMISSIONS.USERS.GET_PAGINATE) },
       { label: 'Skills', path: '/admin/skills', icon: <ToolOutlined />, show: isSuper || hasPerm(ALL_PERMISSIONS.SKILLS.GET_PAGINATE) },
       { label: 'Roles & Perms', path: '/admin/roles', icon: <SafetyOutlined />, show: isSuper || hasPerm(ALL_PERMISSIONS.ROLES.GET_PAGINATE) },
-    ].filter(item => item.show) // Chỉ giữ lại các item thỏa mãn điều kiện
+      
+      // 🔥 THÊM MENU SUBSCRIBERS VÀO ĐÂY
+      { label: 'Subscribers', path: '/admin/subscribers', icon: <MailOutlined />, show: isSuper || hasPerm(ALL_PERMISSIONS.SUBSCRIBERS.GET_PAGINATE) },
+    ].filter(item => item.show) 
   }, [user])
 
   const handleLogout = async () => {
@@ -59,15 +59,7 @@ const AdminLayout: React.FC = () => {
   return (
     <Layout className={styles.root}>
       {/* ── Sidebar ── */}
-      <Layout.Sider
-        collapsible
-        collapsed={collapsed}
-        trigger={null}
-        width={240}
-        collapsedWidth={64}
-        className={styles.sider}
-      >
-        {/* Logo */}
+      <Layout.Sider collapsible collapsed={collapsed} trigger={null} width={240} collapsedWidth={64} className={styles.sider}>
         <div className={styles.logo}>
           <div className={styles.logoMark}>J</div>
           {!collapsed && <span className={styles.logoText}>JobHunter</span>}
@@ -75,17 +67,10 @@ const AdminLayout: React.FC = () => {
 
         {!collapsed && <div className={styles.sectionLabel}>Navigation</div>}
 
-        {/* Nav */}
         <nav className={styles.nav}>
           {filteredNav.map(({ label, path, icon }) => (
             <Tooltip key={path} title={collapsed ? label : ''} placement="right">
-              <NavLink
-                to={path}
-                end={path === '/admin'}
-                className={({ isActive }) =>
-                  `${styles.navItem} ${isActive ? styles.active : ''}`
-                }
-              >
+              <NavLink to={path} end={path === '/admin'} className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}>
                 <span className={styles.navIcon}>{icon}</span>
                 {!collapsed && <span className={styles.navLabel}>{label}</span>}
               </NavLink>
@@ -93,7 +78,6 @@ const AdminLayout: React.FC = () => {
           ))}
         </nav>
 
-        {/* User */}
         <div className={styles.siderBottom}>
           <Dropdown menu={userMenu} placement="topLeft" trigger={['click']}>
             <div className={styles.userCard}>
@@ -113,7 +97,6 @@ const AdminLayout: React.FC = () => {
 
       {/* ── Content ── */}
       <Layout className={styles.content}>
-        {/* Topbar */}
         <Layout.Header className={styles.header}>
           <div className={styles.headerLeft}>
             <button className={styles.collapseBtn} onClick={() => setCollapsed((v) => !v)}>
@@ -130,7 +113,6 @@ const AdminLayout: React.FC = () => {
           </div>
         </Layout.Header>
 
-        {/* Page */}
         <Layout.Content className={styles.page}>
           <Outlet />
         </Layout.Content>

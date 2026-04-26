@@ -54,7 +54,13 @@ const JobDetailPage: React.FC = () => {
   if (loading) return <div className={styles.root}><div className={styles.container}><Skeleton active paragraph={{ rows: 10 }} /></div></div>
   if (!job) return <div className={styles.root}><div className={styles.container}><p>Job not found.</p></div></div>
 
-  const expired = isJobExpired(job.endDate)
+  const expired = isJobExpired(job.endDate, job.active)
+
+  // Label lý do hết hạn
+  const expiredReason =
+    job.active === 'FILLED' ? 'Positions filled'
+    : job.active === 'CLOSED' ? 'Recruitment closed'
+    : 'Application deadline passed'
 
   return (
     <div className={styles.root}>
@@ -86,7 +92,11 @@ const JobDetailPage: React.FC = () => {
                 <span className={styles.chip} style={{ color: LEVEL_COLOR[job.level], fontWeight: 700 }}>{job.level}</span>
                 <span className={styles.chip}><TeamOutlined /> {job.quantity} openings</span>
                 <span className={styles.chip}><CalendarOutlined /> Deadline: {formatDate(job.endDate)}</span>
-                {expired && <Tag color="default">Expired</Tag>}
+                {expired ? (
+                  <Tag color="error" style={{ fontWeight: 600, fontSize: 12 }}>🚫 {expiredReason}</Tag>
+                ) : (
+                  <Tag color="success" style={{ fontWeight: 600, fontSize: 12 }}>✅ Open</Tag>
+                )}
               </div>
 
               <div className={styles.skills}>
@@ -118,11 +128,26 @@ const JobDetailPage: React.FC = () => {
             <div className={styles.stickyCard}>
               <div className={styles.salary}><DollarOutlined /> {formatSalary(job.salary)}</div>
               <div className={styles.salaryNote}>per month · Negotiable</div>
-              <Button type="primary" size="large" block disabled={expired}
-                onClick={() => { if (!isAuth) { navigate('/login'); return }; setApplyOpen(true) }}
-                style={{ height: 48, fontWeight: 600, marginBottom: 10 }}>
-                {expired ? 'Expired' : '🚀 Apply Now'}
-              </Button>
+              {expired ? (
+                <div style={{
+                  background: 'rgba(239,68,68,.08)',
+                  border: '1px solid rgba(239,68,68,.25)',
+                  borderRadius: 12,
+                  padding: '12px 16px',
+                  marginBottom: 10,
+                  textAlign: 'center',
+                }}>
+                  <div style={{ fontSize: 20, marginBottom: 4 }}>🚫</div>
+                  <div style={{ fontWeight: 700, color: '#dc2626', fontSize: 14 }}>No longer accepting applications</div>
+                  <div style={{ fontSize: 12, color: 'var(--tx3)', marginTop: 4 }}>{expiredReason}</div>
+                </div>
+              ) : (
+                <Button type="primary" size="large" block
+                  onClick={() => { if (!isAuth) { navigate('/login'); return }; setApplyOpen(true) }}
+                  style={{ height: 48, fontWeight: 600, marginBottom: 10 }}>
+                  🚀 Apply Now
+                </Button>
+              )}
               <Button size="large" block style={{ height: 48, fontWeight: 600 }}>💾 Save Job</Button>
 
               <hr className={styles.divider} />

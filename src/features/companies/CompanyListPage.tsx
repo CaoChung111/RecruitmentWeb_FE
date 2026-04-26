@@ -75,29 +75,36 @@ const CompanyListPage: React.FC = () => {
           <div className={styles.grid}>
             {companies.map(co => (
               <div key={co.id} className={styles.card} onClick={() => navigate(`/companies/${co.id}`)}>
-                <div className={styles.logoWrap}>
-                  <div className={styles.logo}>
-                    {co.logo ? <img src={co.logo} alt={co.name} /> : co.name.charAt(0)}
+                {/* Gradient cover banner */}
+                <div className={styles.cover} />
+
+                {/* Body */}
+                <div className={styles.body}>
+                  {/* Floating logo */}
+                  <div className={styles.logoWrap}>
+                    <div className={styles.logo}>
+                      {co.logo ? <img src={co.logo} alt={co.name} /> : co.name.charAt(0)}
+                    </div>
                   </div>
-                  <div>
-                    <div className={styles.name}>{co.name}</div>
-                    <div className={styles.addr}>{co.address}</div>
+
+                  <div className={styles.name}>{co.name}</div>
+                  <div className={styles.addr}>📍 {co.address}</div>
+
+                  <div className={styles.divider} />
+
+                  <div className={styles.footer}>
+                    <Button size="small" block onClick={(e) => { e.stopPropagation(); navigate(`/companies/${co.id}`) }}>
+                      Details
+                    </Button>
+                    <Button
+                      type="primary"
+                      size="small"
+                      block
+                      onClick={(e) => { e.stopPropagation(); navigate(`/jobs?company=${co.id}`) }}
+                    >
+                      View Jobs
+                    </Button>
                   </div>
-                </div>
-                
-                <div className={styles.footer}>
-                  <Button size="small" block>Details</Button>
-                  <Button 
-                    type="primary" 
-                    size="small" 
-                    block 
-                    onClick={(e) => {
-                      e.stopPropagation(); 
-                      navigate(`/jobs?company=${co.id}`);
-                    }}
-                  >
-                    View Jobs
-                  </Button>
                 </div>
               </div>
             ))}

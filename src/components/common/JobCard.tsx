@@ -109,15 +109,14 @@ const JobCard: React.FC<Props> = ({ job, onApply }) => {
           </span>
 
           <Button
-            type="primary"
+            type={expired ? 'default' : 'primary'}
             size="small"
-            disabled={expired}
             onClick={(e) => {
               e.stopPropagation()
               onApply?.(job)
             }}
           >
-            Apply
+            {expired ? 'View' : 'Apply'}
           </Button>
         </div>
       </div>

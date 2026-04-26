@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Select, Skeleton } from 'antd'
-import { SearchOutlined, EnvironmentOutlined } from '@ant-design/icons'
+import { Button, Select, Skeleton, Tag } from 'antd'
+import { SearchOutlined, EnvironmentOutlined, FireOutlined } from '@ant-design/icons'
 import { jobService } from '../../services/job.service'
 import JobCard from '../../components/common/JobCard'
 import type { Job } from '../../types'
@@ -22,18 +22,28 @@ const HomePage: React.FC = () => {
   const [location, setLocation] = useState<string | undefined>()
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
+  const [trendingJobs, setTrendingJobs] = useState<Job[]>([])
+  const [trendingLoading, setTrendingLoading] = useState(true)
 
-  // 🔥 Lấy 6 job mới nhất
+  // Lấy 6 job mới nhất
   useEffect(() => {
     setLoading(true)
-
     jobService.getAll({
-      page: 0,                      // ⚠ Spring page bắt đầu từ 0
+      page: 0,
       size: 6,
-      sort: 'createdAt,desc'        // ✅ mới nhất
+      sort: 'createdAt,desc'
     })
       .then((d) => setJobs(d?.result ?? []))
       .finally(() => setLoading(false))
+  }, [])
+
+  // Lấy top trending jobs từ Redis
+  useEffect(() => {
+    setTrendingLoading(true)
+    jobService.getTrending()
+      .then((data) => setTrendingJobs((data as any) ?? []))
+      .catch(() => setTrendingJobs([]))
+      .finally(() => setTrendingLoading(false))
   }, [])
 
   // 🔥 Build URL search sạch
@@ -133,6 +143,61 @@ const HomePage: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* ── Trending Jobs ── */}
+      {(trendingLoading || trendingJobs.length > 0) && (
+        <section className={styles.section} style={{ paddingTop: 48, paddingBottom: 0 }}>
+          <div className={styles.container}>
+            <div className={styles.secHead}>
+              <div>
+                <h2 className={styles.secTitle} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    width: 36, height: 36, borderRadius: '50%',
+                    background: 'linear-gradient(135deg,#f97316,#ef4444)',
+                    boxShadow: '0 4px 14px rgba(239,68,68,.35)'
+                  }}>
+                    <FireOutlined style={{ color: '#fff', fontSize: 17 }} />
+                  </span>
+                  Trending This Week
+                </h2>
+                <p className={styles.secSub}>Most viewed jobs right now</p>
+              </div>
+              <Button onClick={() => navigate('/jobs')}>View all →</Button>
+            </div>
+
+            {trendingLoading ? (
+              <div className={styles.grid}>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} style={{ background: 'var(--surf)', border: '1px solid var(--bdr)', borderRadius: 16, padding: 20 }}>
+                    <Skeleton active paragraph={{ rows: 3 }} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.grid}>
+                {trendingJobs.slice(0, 6).map((job, index) => (
+                  <div key={job.id} style={{ position: 'relative', minWidth: 0 }}>
+                    {index < 3 && (
+                      <Tag
+                        icon={<FireOutlined />}
+                        color={index === 0 ? 'volcano' : index === 1 ? 'orange' : 'gold'}
+                        style={{
+                          position: 'absolute', top: 12, right: 12, zIndex: 10,
+                          fontSize: 11, fontWeight: 700, borderRadius: 999, padding: '2px 8px'
+                        }}
+                      >
+                        {index === 0 ? '#1 Hot' : index === 1 ? '#2 Trending' : '#3 Popular'}
+                      </Tag>
+                    )}
+                    <JobCard job={job} onApply={() => navigate(`/jobs/${job.id}`)} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Latest jobs */}
       <section className={styles.section}>

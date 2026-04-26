@@ -17,6 +17,7 @@ import CompanyDetailPage from '../features/companies/CompanyDetailPage'
 import MyResumesPage from '../features/resumes/MyResumesPage'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
+import ForgotPasswordPage from '../features/auth/ForgotPasswordPage'
 import AdminDashboard from '../features/admin/dashboard/AdminDashboard'
 import AdminJobsPage from '../features/admin/jobs/AdminJobsPage'
 import AdminCompaniesPage from '../features/admin/companies/AdminCompaniesPage'
@@ -72,6 +73,7 @@ const AppContent: React.FC = () => {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           </Route>
           {/* Admin */}
           <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>

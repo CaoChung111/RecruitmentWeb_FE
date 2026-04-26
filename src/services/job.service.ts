@@ -10,6 +10,8 @@ export const jobService = {
 
   getById: (id: number) => get<Job>(`/api/v1/jobs/${id}`),
 
+  getTrending: () => get<Job[]>('/api/v1/jobs/trending'),
+
   create: (data: JobRequestDTO) => post<Job>('/api/v1/jobs', data),
 
   update: (id: number, data: Partial<JobRequestDTO>) =>

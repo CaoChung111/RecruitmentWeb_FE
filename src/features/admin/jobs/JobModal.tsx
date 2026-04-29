@@ -57,7 +57,7 @@ const JobModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, companie
       onSuccess()
       onClose()
     } catch { 
-      notification.error({ message: 'Failed to save job' }) 
+      // Error notification is handled globally by api.ts interceptor
     } finally { 
       setSaving(false) 
     }

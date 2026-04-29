@@ -52,7 +52,7 @@ const CompanyModal: React.FC<Props> = ({ open, onClose, onSuccess, editing }) =>
       onSuccess()
       onClose()
     } catch { 
-      notification.error({ message: 'Failed to save company' }) 
+      // Error notification is handled globally by api.ts interceptor
     } finally { 
       setSaving(false) 
     }

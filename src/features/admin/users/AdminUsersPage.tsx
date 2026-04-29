@@ -64,20 +64,20 @@ const AdminUsersPage: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       await userService.softDelete(id)
-      notification.success({ message: 'Đã khóa tài khoản thành công' })
+      notification.success({ message: 'Account locked successfully' })
       load()
-    } catch (e) {
-      // Lỗi đã được api.ts (Interceptor) bắt và hiển thị, ở đây có thể bỏ trống hoặc log
+    } catch {
+      // Error notification is handled globally by api.ts interceptor
     }
   }
 
   const handleRestore = async (id: number) => {
     try {
       await userService.restore(id)
-      notification.success({ message: 'Đã khôi phục tài khoản thành công' })
+      notification.success({ message: 'Account restored successfully' })
       load()
-    } catch (e) {
-      // Tương tự, api.ts sẽ tự báo lỗi nếu có
+    } catch {
+      // Error notification is handled globally by api.ts interceptor
     }
   }
 
@@ -109,7 +109,7 @@ const AdminUsersPage: React.FC = () => {
         {isTrashView ? (
           // NẾU Ở TAB KHÓA: Chỉ hiện nút Restore
           <HasPermission requiredPermission={ALL_PERMISSIONS.USERS.RESTORE}>
-            <Popconfirm title="Khôi phục tài khoản này?" onConfirm={() => handleRestore(r.id)}>
+            <Popconfirm title="Restore this account?" onConfirm={() => handleRestore(r.id)}>
               <Button size="small" type="primary" ghost icon={<ReloadOutlined />}>Restore</Button>
             </Popconfirm>
           </HasPermission>
@@ -121,7 +121,7 @@ const AdminUsersPage: React.FC = () => {
             </HasPermission>
             
             <HasPermission requiredPermission={ALL_PERMISSIONS.USERS.DELETE}>
-              <Popconfirm title="Khóa tài khoản này?" onConfirm={() => handleDelete(r.id)} okButtonProps={{ danger: true }}>
+              <Popconfirm title="Lock this account?" onConfirm={() => handleDelete(r.id)} okButtonProps={{ danger: true }}>
                 <Button size="small" danger>Lock</Button>
               </Popconfirm>
             </HasPermission>
@@ -140,9 +140,9 @@ const AdminUsersPage: React.FC = () => {
           {/* 🔥 Dùng ALL_PERMISSIONS.USERS.VIEW_DISABLE cho nút chuyển tab */}
           <HasPermission requiredPermission={ALL_PERMISSIONS.USERS.VIEW_DISABLE}>
             <Segmented 
-              options={['Hoạt động', 'Bị khóa']} 
-              value={isTrashView ? 'Bị khóa' : 'Hoạt động'}
-              onChange={(val) => setIsTrashView(val === 'Bị khóa')}
+              options={['Active', 'Locked']} 
+              value={isTrashView ? 'Locked' : 'Active'}
+              onChange={(val) => setIsTrashView(val === 'Locked')}
             />
           </HasPermission>
 

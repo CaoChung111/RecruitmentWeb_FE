@@ -39,8 +39,8 @@ const UserModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, compani
       }
       onSuccess()
       onClose()
-    } catch { 
-      notification.error({ message: 'Failed' }) 
+    } catch {
+      // Error notification is handled globally by api.ts interceptor
     } finally { 
       setSaving(false) 
     }

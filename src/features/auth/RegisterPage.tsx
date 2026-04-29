@@ -130,8 +130,8 @@ const RegisterPage: React.FC = () => {
             <Input size="large" placeholder="you@example.com" />
           </Form.Item>
           
-          <Form.Item name="password" label="Password" rules={[{ required: true, min: 6, message: 'Please enter a password with at least 6 characters!' }]}>
-            <Input.Password size="large" placeholder="Min 6 characters" />
+          <Form.Item name="password" label="Password" rules={[{ required: true, min: 6, message: 'Password must be at least 6 characters!' }]}>
+            <Input.Password size="large" placeholder="••••••••" />
           </Form.Item>
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

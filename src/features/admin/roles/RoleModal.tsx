@@ -45,10 +45,10 @@ const RoleModal: React.FC<Props> = ({ open, onClose, onSuccess, editing, allPerm
     try {
       if (editing) { 
         await roleService.update(editing.id, values)
-        notification.success({ message: 'Cập nhật Role thành công!' }) 
+        notification.success({ message: 'Role updated successfully!' }) 
       } else { 
         await roleService.create(values)
-        notification.success({ message: 'Tạo mới Role thành công!' }) 
+        notification.success({ message: 'Role created successfully!' }) 
       }
       onSuccess()
       onClose()

@@ -68,8 +68,8 @@ const AdminResumesPage: React.FC = () => {
       await resumeService.updateStatus(id, status)
       notification.success({ message: `Status updated to ${status}` })
       load()
-    } catch (e) {
-      notification.error({ message: 'Lỗi khi cập nhật trạng thái' })
+    } catch {
+      // Error notification is handled globally by api.ts interceptor
     }
   }
 
@@ -78,8 +78,8 @@ const AdminResumesPage: React.FC = () => {
       await resumeService.remove(id)
       notification.success({ message: 'Deleted' })
       load()
-    } catch (e) {
-      notification.error({ message: 'Lỗi khi xóa' })
+    } catch {
+      // Error notification is handled globally by api.ts interceptor
     }
   }
 

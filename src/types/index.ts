@@ -16,6 +16,15 @@ export interface ApiResponse<T = unknown> {
   data: T
 }
 
+// Matches backend ResponseError: { status, error, message, path, timestamp }
+export interface ApiError {
+  status: number
+  error: string
+  message: string
+  path: string
+  timestamp: string
+}
+
 // ==========================================
 // RBAC: PERMISSION & ROLE (Đưa lên trên để tái sử dụng)
 // ==========================================

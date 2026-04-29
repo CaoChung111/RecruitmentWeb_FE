@@ -35,7 +35,7 @@ const SkillModal: React.FC<Props> = ({ open, onClose, onSuccess, editing }) => {
       onSuccess()
       onClose()
     } catch { 
-      notification.error({ message: 'Failed' }) 
+      // Error notification is handled globally by api.ts interceptor
     } finally { 
       setSaving(false) 
     }

@@ -50,20 +50,20 @@ const AdminCompaniesPage: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       await companyService.softDelete(id)
-      notification.success({ message: 'Đã chuyển vào thùng rác' })
+      notification.success({ message: 'Company moved to trash' })
       load()
-    } catch (e) {
-      notification.error({ message: 'Lỗi khi xóa' })
+    } catch {
+      // Error notification is handled globally by api.ts interceptor
     }
   }
 
   const handleRestore = async (id: number) => {
     try {
       await companyService.restore(id)
-      notification.success({ message: 'Khôi phục thành công' })
+      notification.success({ message: 'Company restored successfully' })
       load()
-    } catch (e) {
-      notification.error({ message: 'Lỗi khi khôi phục' })
+    } catch {
+      // Error notification is handled globally by api.ts interceptor
     }
   }
 
@@ -71,7 +71,7 @@ const AdminCompaniesPage: React.FC = () => {
     <div className={styles.root}>
       <div className={styles.pageHead}>
         <div>
-          <h1 className={styles.title}>{isTrashView ? 'Thùng rác Công ty' : 'Companies'}</h1>
+          <h1 className={styles.title}>{isTrashView ? 'Company Trash' : 'Companies'}</h1>
           <p className={styles.sub}>{total} companies</p>
         </div>
         
@@ -79,9 +79,9 @@ const AdminCompaniesPage: React.FC = () => {
           
           <HasPermission requiredPermission={{ method: "GET", apiPath: "/api/v1/companies/trash", module: "COMPANIES" }}>
             <Segmented 
-              options={['Hoạt động', 'Đã xóa']} 
-              value={isTrashView ? 'Đã xóa' : 'Hoạt động'}
-              onChange={(val) => setIsTrashView(val === 'Đã xóa')}
+              options={['Active', 'Deleted']} 
+              value={isTrashView ? 'Deleted' : 'Active'}
+              onChange={(val) => setIsTrashView(val === 'Deleted')}
             />
           </HasPermission>
 
@@ -126,7 +126,7 @@ const AdminCompaniesPage: React.FC = () => {
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 'auto' }}>
                 {isTrashView ? (
                   <HasPermission requiredPermission={{ method: "PUT", apiPath: "/api/v1/companies/{id}/restore", module: "COMPANIES" }}>
-                    <Popconfirm title="Khôi phục công ty này?" onConfirm={() => handleRestore(co.id)}>
+                    <Popconfirm title="Restore this company?" onConfirm={() => handleRestore(co.id)}>
                       <Button size="small" type="primary" ghost icon={<ReloadOutlined />}>Restore</Button>
                     </Popconfirm>
                   </HasPermission>
@@ -137,7 +137,7 @@ const AdminCompaniesPage: React.FC = () => {
                     </HasPermission>
 
                     <HasPermission requiredPermission={{ method: "DELETE", apiPath: "/api/v1/companies/{id}", module: "COMPANIES" }}>
-                        <Popconfirm title="Xóa công ty?" onConfirm={() => handleDelete(co.id)} okButtonProps={{ danger: true }}>
+                        <Popconfirm title="Delete this company?" onConfirm={() => handleDelete(co.id)} okButtonProps={{ danger: true }}>
                         <Button size="small" danger icon={<DeleteOutlined />}>Delete</Button>
                         </Popconfirm>
                     </HasPermission>
